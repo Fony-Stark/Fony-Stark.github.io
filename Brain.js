@@ -3,17 +3,13 @@ function simulator_start() {
     // alert("button was clicked");
     let short_cut = document.getElementById("stats1").innerHTML;
     console.log(short_cut);
-    if(b == 0){
-        document.getElementById("stats1").innerHTML = "I don't like this anymore.";
-        b = 1;
-    }
-    else if (b == 1){
-        document.getElementById("stats1").innerHTML = "I still don't like this.";
-        b = 2;
-    } else {
-        document.getElementById("stats1").innerHTML = "This is shit";
-        b = 0;
-    }
+    
+    let thirst_start = document.getElementById("thirst").value;
+    let hunger_start = document.getElementById("hunger").value;
+    let speed_start = document.getElementById("speed").value;
+    let hp_start = document.getElementById("hp").value;
+    document.getElementById("stats1").innerHTML = thirst_start;
+     
     /*
     if(short_cut == "her kan du analyser på hvad du har"){
         document.getElementById("stats1").innerHTML = "I don't like this anymore.";
