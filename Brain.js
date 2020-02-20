@@ -29,7 +29,7 @@ function main(){
 function event_listeners(){
     function toggle_side_bar(toggle){
         if(toggle == 0){
-            document.getElementById("left_side_bar").style.width = "10vw";
+            document.getElementById("left_side_bar").style.width = "17vw";
             document.getElementById("head_side_bar").style.display = "block";
             document.getElementById("body_side_bar").style.display = "block";
             document.getElementById("foot_side_bar").style.display = "block";

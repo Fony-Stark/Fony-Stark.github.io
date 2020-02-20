@@ -19,7 +19,7 @@ p {
     height: 97.5vh;
     width: 1vw;
     transition: 0.6s;
-    background-color: yellow;
+    background-color: #7FCDBB;
     padding-top: 2.5vh;
 }
 
@@ -28,6 +28,7 @@ p {
     margin-right: 1vw;
     display: none;
     border: solid;
+    border-width: 0.05vw;
     width: auto;
     overflow: hidden;
 }
@@ -38,13 +39,13 @@ p {
 
 #body_side_bar {
     margin-top: 2vh;
-    height: 50vh;
+    height: 55vh;
 }
 
 #foot_side_bar {
     padding: 0;
     margin-top: 2vh;
-    height: 20vh;
+    height: 15vh;
 }
 
 #small_text {
