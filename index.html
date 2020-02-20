@@ -5,51 +5,65 @@
     <meta name="author" content="Karl Holt" />
     <title>Fony Programming</title>
     <link href="Makeup.css" rel='stylesheet' type="text/css">
-    <script src="Brain.js"></script>
     <meta charset="utf-8"/>
 
 </head>
 <body>
-    <div id="user_modification" class="all">
-        <div class="modifications">
-            <p class="explnation_p">Here can you set a selected amount of start health</p>
-            <input class="input_field" id="hp" type="text" placeholder="default = 10">
+    <div id = "left_side_bar">
+        <div class="side_bar_left" id="head_side_bar">
+            
         </div>
-        <div class="modifications">
-            <p class="explnation_p">Here can you set a selected amount of start speed</p>
-            <input class="input_field" id="speed" type="text" placeholder="default = 10">
-        </div>
-        <div class="modifications">
-            <p class="explnation_p">Here can you set a selected amount of hunger</p>
-            <input class="input_field" id="hunger" type="text" placeholder="default = 10">
-        </div>
-        <div class="modifications">
-            <p class="explnation_p">here can you set a seleced amount of thirst</p>
-            <input class="input_field" id="thirst" type="text" placeholder="default = 10">
-        </div>
-        <div class="modifications">
-            <p class="explnation_p">Press this button when you have inserted all the data you wanted</p>
-            <input id="start_s" onclick="simulator_start()" value="start simulation" type="button">
-        </div>
-    </div>
-    <div id="container">    
-        <div id="simulation" class="all">
-            <table id="sim_table">
+        <div  class="side_bar_left" id="body_side_bar">
 
-            </table>
         </div>
-        <div id="side_bar" class="all">
-            <div id="stats" class="all">
-                <p id="stats1">her kan du analyser på hvad du har</p>
-                <p id="stats2">her kan du analyser på hvad du har</p>
-                <p id="stats3">her kan du analyser på hvad du har</p>
-                <p id="stats4">her kan du analyser på hvad du har</p>
+        <div class="side_bar_left" id="foot_side_bar">
+            <p id="credit">This website is developed by Karl Holt</p>
+            <p id="contact">Contact on: wowgamergamer-<br> wow@gmail.com <br> or +45 29 79 94 91</p>
+        </div>
+    </div>
+    <div id="current_html">
+        <div id="user_modification" class="all">
+            <div class="modifications">
+                <p class="explnation_p">Here can you set a selected amount of start health</p>
+                <input class="input_field" id="hp" type="text" placeholder="default = 10">
             </div>
-            <div id="reklame" class="all">
-                <p>Er du træt af livet og mennesker? Brug for en pause? Bliv dypfrosset af Dr Doffinsmith, indtil resten af den menneskelige race er uddød. Køb i dag, kun 999,999,999.99 bitcoins!!!!!</p>
-                <p id="small_text">(Surviorgear for the apocalypse sold seperate)</p>
+            <div class="modifications">
+                <p class="explnation_p">Here can you set a selected amount of start speed</p>
+                <input class="input_field" id="speed" type="text" placeholder="default = 10">
+            </div>
+            <div class="modifications">
+                <p class="explnation_p">Here can you set a selected amount of hunger</p>
+                <input class="input_field" id="hunger" type="text" placeholder="default = 10">
+            </div>
+            <div class="modifications">
+                <p class="explnation_p">here can you set a seleced amount of thirst</p>
+                <input class="input_field" id="thirst" type="text" placeholder="default = 10">
+            </div>
+            <div class="modifications">
+                <p class="explnation_p">Press this button when you have inserted all the data you wanted</p>
+                <input id="start_s" onclick="simulator_start()" value="start simulation" type="button">
+            </div>
+        </div>
+        <div id="container">    
+            <div id="simulation" class="all">
+                <table id="sim_table">
+
+                </table>
+            </div>
+            <div id="side_bar" class="all">
+                <div id="stats" class="all">
+                    <p id="stats1">her kan du analyser på hvad du har</p>
+                    <p id="stats2">her kan du analyser på hvad du har</p>
+                    <p id="stats3">her kan du analyser på hvad du har</p>
+                    <p id="stats4">her kan du analyser på hvad du har</p>
+                </div>
+                <div id="reklame" class="all">
+                    <p>Er du træt af livet og mennesker? Brug for en pause? Bliv dypfrosset af Dr Doffinsmith, indtil resten af den menneskelige race er uddød. Køb i dag, kun 999,999,999.99 bitcoins!!!!!</p>
+                    <p id="small_text">(Surviorgear for the apocalypse sold seperate)</p>
+                </div>
             </div>
         </div>
     </div>
+    <script src="Brain.js"></script>
 </body>
 </html>

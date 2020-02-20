@@ -14,6 +14,39 @@ p {
     font-size: 1.8vh;
 }
 
+#left_side_bar {
+    position: absolute;
+    height: 97.5vh;
+    width: 1vw;
+    transition: 0.6s;
+    background-color: yellow;
+    padding-top: 2.5vh;
+}
+
+.side_bar_left {
+    margin-left: 1vw;
+    margin-right: 1vw;
+    display: none;
+    border: solid;
+    width: auto;
+    overflow: hidden;
+}
+
+#head_side_bar {
+    height: 20vh;
+}
+
+#body_side_bar {
+    margin-top: 2vh;
+    height: 50vh;
+}
+
+#foot_side_bar {
+    padding: 0;
+    margin-top: 2vh;
+    height: 20vh;
+}
+
 #small_text {
     font-size: 1.2vh;
 }
@@ -23,13 +56,18 @@ table {
     padding: 0;
 }
 
-body{
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#current_html {
     height: 98vh;
     width:  98vw;
     margin: 0;
     padding-top: 1vh;
     padding-bottom: 1vh;
-    padding-left: 0.5vw;
+    padding-left: 1.5vw;
     padding-right: 0.5vw;
     background-color: #f0ffce;
     object-fit: contain;
@@ -82,7 +120,7 @@ body{
 
 #container {
     margin-top: 1vh;
-    height: 80vh;
+    height: 82vh;
     width: 98vw;
     padding: 0;
 }

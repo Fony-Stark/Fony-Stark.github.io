@@ -20,3 +20,30 @@ function simulator_start() {
     }
     */
 };
+
+function main(){
+    event_listeners();
+    document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
+}
+
+function event_listeners(){
+    function toggle_side_bar(toggle){
+        if(toggle == 0){
+            document.getElementById("left_side_bar").style.width = "10vw";
+            document.getElementById("head_side_bar").style.display = "block";
+            document.getElementById("body_side_bar").style.display = "block";
+            document.getElementById("foot_side_bar").style.display = "block";
+            toggle_side = 1;
+        } else {
+            document.getElementById("left_side_bar").style.width = "1vw"
+            document.getElementById("head_side_bar").style.display = "none";
+            document.getElementById("body_side_bar").style.display = "none";
+            document.getElementById("foot_side_bar").style.display = "none";
+            toggle_side = 0;
+        }
+    }
+    let toggle_side = 0;
+    document.getElementById("left_side_bar").addEventListener("click", () => toggle_side_bar(toggle_side));
+}
+
+main();
