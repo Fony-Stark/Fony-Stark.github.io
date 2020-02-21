@@ -43,9 +43,10 @@ function event_listeners(){
         document.getElementById("foot_side_bar").style.display = "none";
     }
     let toggle = 0;
+
     document.getElementById("left_side_bar").addEventListener("mouseover", () => mouse_over());
     document.getElementById("left_side_bar").addEventListener("mouseout", () => mouse_away());
-    document.getElementById("left_side_bar").addEventListener("click", () => (toggle == 0) ? mouse_over() : mouse_away());
+    document.getElementById("left_side_bar").addEventListener("click", () => (toggle == 0 ? mouse_over() : mouse_away()));
 }
 
 main();
