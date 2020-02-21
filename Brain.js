@@ -27,23 +27,25 @@ function main(){
 }
 
 function event_listeners(){
-    function toggle_side_bar(toggle){
-        if(toggle == 0){
-            document.getElementById("left_side_bar").style.width = "17vw";
-            document.getElementById("head_side_bar").style.display = "block";
-            document.getElementById("body_side_bar").style.display = "block";
-            document.getElementById("foot_side_bar").style.display = "block";
-            toggle_side = 1;
-        } else {
-            document.getElementById("left_side_bar").style.width = "4vw"
-            document.getElementById("head_side_bar").style.display = "none";
-            document.getElementById("body_side_bar").style.display = "none";
-            document.getElementById("foot_side_bar").style.display = "none";
-            toggle_side = 0;
-        }
+    function mouse_over(){
+        toggle = 1;
+        document.getElementById("left_side_bar").style.width = "17vw";
+        document.getElementById("head_side_bar").style.display = "block";
+        document.getElementById("body_side_bar").style.display = "block";
+        document.getElementById("foot_side_bar").style.display = "block";
     }
-    let toggle_side = 0;
-    document.getElementById("left_side_bar").addEventListener("click", () => toggle_side_bar(toggle_side));
+
+    function mouse_away(){
+        toggle = 0;
+        document.getElementById("left_side_bar").style.width = "4vw"
+        document.getElementById("head_side_bar").style.display = "none";
+        document.getElementById("body_side_bar").style.display = "none";
+        document.getElementById("foot_side_bar").style.display = "none";
+    }
+    let toggle = 0;
+    document.getElementById("left_side_bar").addEventListener("mouseover", () => mouse_over());
+    document.getElementById("left_side_bar").addEventListener("mouseout", () => mouse_away());
+    document.getElementById("left_side_bar").addEventListener("click", () => (toggle == 0) ? mouse_over() : mouse_away());
 }
 
 main();
