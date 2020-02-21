@@ -82,13 +82,13 @@ body {
 .input_field {
     float: left;
     margin: 0;
-    width: 15.5vw;
+    width: 14.5vw;
     height: 2vh;
     font-size: 1.5vh;
 }
 
 #start_s {
-    width: 15.5vw;
+    width: 14.5vw;
     height: 2vh;
     font-size: 1.5vh;
     margin: 0;
@@ -103,12 +103,23 @@ body {
     padding: 0;
     height: 15vh;
     background-color: #BA765C;
-    overflow: hidden;
+    overflow: visible;
+}
+
+#settings_logo_box{
+    margin: auto;
+    align: center;
+    width: min-content;
+}
+
+#settings_logo {
+    margin: 0;
+    font-size: 3vh;
 }
 
 .modifications{
     height: 10vh;
-    width: 16vw;
+    width: 14.5vw;
     float: left;
     margin-left: 0.7vw;
     margin-top: 1.5vh;
@@ -118,6 +129,10 @@ body {
     padding-right: 1vw;
     background: #a9e190;
     border-radius: 1vw;
+}
+
+#advanced_seetings{
+    width: 5vw;
 }
 
 #container {

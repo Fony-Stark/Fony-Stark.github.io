@@ -28,7 +28,7 @@ function main(){
 
 function event_listeners(){
     function mouse_over(){
-        toggle = 1;
+        toggle_left_bar = 1;
         document.getElementById("left_side_bar").style.width = "17vw";
         document.getElementById("head_side_bar").style.display = "block";
         document.getElementById("body_side_bar").style.display = "block";
@@ -36,17 +36,30 @@ function event_listeners(){
     }
 
     function mouse_away(){
-        toggle = 0;
+        toggle_left_bar = 0;
         document.getElementById("left_side_bar").style.width = "4vw"
         document.getElementById("head_side_bar").style.display = "none";
         document.getElementById("body_side_bar").style.display = "none";
         document.getElementById("foot_side_bar").style.display = "none";
     }
-    let toggle = 0;
+
+    function open_advanced_settings(){
+        if(toggle_settings == 0){
+            toggle_settings = 1
+            document.getElementById("advanced_settings").style.display = "block";
+        } else {
+            toggle_settings = 0;
+            document.getElementById("advanced_settings").style.display = "none";
+        }
+
+    }
+    let toggle_left_bar = 0;
+    let toggle_settings = 0;
 
     document.getElementById("left_side_bar").addEventListener("mouseover", () => mouse_over());
     document.getElementById("left_side_bar").addEventListener("mouseout", () => mouse_away());
-    document.getElementById("left_side_bar").addEventListener("click", () => (toggle == 0 ? mouse_over() : mouse_away()));
+    document.getElementById("left_side_bar").addEventListener("click", () => (toggle_left_bar == 0 ? mouse_over() : mouse_away()));
+    document.getElementById("settings_logo_box").addEventListener("click", () => open_advanced_settings());
 }
 
 main();
