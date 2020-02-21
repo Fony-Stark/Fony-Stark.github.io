@@ -80,7 +80,9 @@ body {
 }
 
 .input_field {
+    position: relative;
     float: left;
+    top: 1vh;
     margin: 0;
     width: 14.5vw;
     height: 2vh;
@@ -94,27 +96,39 @@ body {
     margin: 0;
     padding: 0;
     border: 0;
+    position: relative;
     float: left;
+    top: 1vh;
 }
 
 #user_modification {
     width: 95vw;
     margin: 0;
     padding: 0;
-    height: 15vh;
+    height: 27vh;
     background-color: #BA765C;
     overflow: visible;
 }
 
 #settings_logo_box{
     margin: auto;
-    align: center;
     width: min-content;
+    cursor: pointer;
 }
 
 #settings_logo {
     margin: 0;
     font-size: 3vh;
+}
+
+#advanced_seetings_bar {
+    position: relative;
+    margin-top: auto;
+    margin-right: 0;
+    width: 92.9797779999999vw;
+    height: 10vh;
+    background-color: yellow;
+    margin-left: 0.7vw;
 }
 
 .modifications{
