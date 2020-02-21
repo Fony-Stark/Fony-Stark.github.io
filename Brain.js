@@ -35,7 +35,7 @@ function event_listeners(){
             document.getElementById("foot_side_bar").style.display = "block";
             toggle_side = 1;
         } else {
-            document.getElementById("left_side_bar").style.width = "1vw"
+            document.getElementById("left_side_bar").style.width = "4vw"
             document.getElementById("head_side_bar").style.display = "none";
             document.getElementById("body_side_bar").style.display = "none";
             document.getElementById("foot_side_bar").style.display = "none";

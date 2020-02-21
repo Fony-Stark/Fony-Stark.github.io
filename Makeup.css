@@ -11,13 +11,13 @@ th, tr, td{
 }
 
 p {
-    font-size: 1.8vh;
+    font-size: 1.65vh;
 }
 
 #left_side_bar {
     position: absolute;
     height: 97.5vh;
-    width: 1vw;
+    width: 4vw;
     transition: 0.6s;
     background-color: #7FCDBB;
     padding-top: 2.5vh;
@@ -43,7 +43,7 @@ p {
 }
 
 #foot_side_bar {
-    padding: 0;
+    padding-left: 0.5vw;
     margin-top: 2vh;
     height: 15vh;
 }
@@ -64,7 +64,7 @@ body {
 
 #current_html {
     height: 98vh;
-    width:  98vw;
+    width:  95vw;
     margin: 0;
     padding-top: 1vh;
     padding-bottom: 1vh;
@@ -72,6 +72,7 @@ body {
     padding-right: 0.5vw;
     background-color: #f0ffce;
     object-fit: contain;
+    float: right;
 }
 
 .explnation_p {
@@ -81,13 +82,13 @@ body {
 .input_field {
     float: left;
     margin: 0;
-    width: 16vw;
+    width: 15.5vw;
     height: 2vh;
     font-size: 1.5vh;
 }
 
 #start_s {
-    width: 16vw;
+    width: 15.5vw;
     height: 2vh;
     font-size: 1.5vh;
     margin: 0;
@@ -97,7 +98,7 @@ body {
 }
 
 #user_modification {
-    width: 98vw;
+    width: 95vw;
     margin: 0;
     padding: 0;
     height: 15vh;
@@ -107,7 +108,7 @@ body {
 
 .modifications{
     height: 10vh;
-    width: 16.7vw;
+    width: 16vw;
     float: left;
     margin-left: 0.7vw;
     margin-top: 1.5vh;
@@ -122,7 +123,7 @@ body {
 #container {
     margin-top: 1vh;
     height: 82vh;
-    width: 98vw;
+    width: 95vw;
     padding: 0;
 }
 
@@ -132,7 +133,7 @@ body {
     background-color: #cdc776;
     float: left;
     height: inherit;
-    width: 77vw;
+    width: 74vw;
 }
 
 #side_bar{
