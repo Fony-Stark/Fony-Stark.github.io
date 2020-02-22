@@ -122,8 +122,9 @@ body {
 }
 
 #advanced_seetings_bar {
-    position: relative;
+    position: absolute;
     margin-top: auto;
+    top: 16.5vh;
     margin-right: 0;
     width: 92.9797779999999vw;
     height: 10vh;
