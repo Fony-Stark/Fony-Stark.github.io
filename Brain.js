@@ -46,10 +46,12 @@ function event_listeners(){
     function open_advanced_settings(){
         if(toggle_settings == 0){
             toggle_settings = 1
-            document.getElementById("advanced_settings").style.display = "block";
+            document.getElementById("advanced_seetings_bar").style.display = "block";
+            document.getElementById("user_modification").style.height = "27vh";
         } else {
             toggle_settings = 0;
-            document.getElementById("advanced_settings").style.display = "none";
+            document.getElementById("advanced_seetings_bar").style.display = "none";
+            document.getElementById("user_modification").style.height = "15.5vh";
         }
 
     }
