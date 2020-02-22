@@ -46,12 +46,16 @@ function event_listeners(){
     function open_advanced_settings(){
         if(toggle_settings == 0){
             toggle_settings = 1
-            document.getElementById("advanced_seetings_bar").style.display = "block";
             document.getElementById("user_modification").style.height = "27vh";
+            document.getElementById("advanced_seetings_bar").style.height = "10vh";
+            document.getElementById("bottom_facts").style.height = "0px";
+            document.getElementById("container").style.height = "70vh";
         } else {
             toggle_settings = 0;
-            document.getElementById("advanced_seetings_bar").style.display = "none";
             document.getElementById("user_modification").style.height = "15.5vh";
+            document.getElementById("advanced_seetings_bar").style.height = "0";
+            document.getElementById("bottom_facts").style.height = "10vh";
+            document.getElementById("container").style.height = "81vh";
         }
 
     }
