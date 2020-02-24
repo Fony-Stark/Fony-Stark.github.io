@@ -47,15 +47,17 @@ function event_listeners(){
         if(toggle_settings == 0){
             toggle_settings = 1
             document.getElementById("user_modification").style.height = "27vh";
-            document.getElementById("advanced_seetings_bar").style.height = "10vh";
+            document.getElementById("advanced_seetings_bar").style.height = "12.5vh";
             document.getElementById("bottom_facts").style.height = "0px";
             document.getElementById("container").style.height = "70vh";
+            document.getElementById("advanced_hidden").style.display = "block";
         } else {
             toggle_settings = 0;
             document.getElementById("user_modification").style.height = "15.5vh";
             document.getElementById("advanced_seetings_bar").style.height = "0";
             document.getElementById("bottom_facts").style.height = "10vh";
             document.getElementById("container").style.height = "81vh";
+            document.getElementById("advanced_hidden").style.display = "none";
         }
 
     }
