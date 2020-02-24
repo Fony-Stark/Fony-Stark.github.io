@@ -207,12 +207,16 @@ body {
 }
 
 #simulation {
-    padding: 0;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
     margin:0;
     background-color: #cdc776;
     float: left;
-    height: 69vh;
-    width: 74vw;
+    height: 67vh;
+    width: 72vw;
+    overflow: hidden;
 }
 
 #side_bar{
