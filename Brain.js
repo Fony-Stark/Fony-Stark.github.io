@@ -20,8 +20,8 @@ function simulator_start() {
     hunger_start = check_for_empty(hunger_start, 10);
     speed_start = check_for_empty(speed_start, 10);
     hp_start = check_for_empty(hp_start, 10);
-    map_width = check_for_empty(map_width, 40);
-    map_height = check_for_empty(map_height, 20);
+    map_width = check_for_empty(map_width, 20);
+    map_height = check_for_empty(map_height, 40);
     game_speed = check_for_empty(game_speed, 100);
     number_foxes = check_for_empty(number_foxes, 1);
     when_foxes = check_for_empty(when_foxes, 20);
@@ -31,7 +31,7 @@ function simulator_start() {
     document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
     document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
 
-    let board_array = create_board(map_width, map_height, 10, map_height*map_width*map_width*map_height);
+    let board_array = create_board(map_width, map_height, map_width, map_height*map_width);
     print_board_to_doc(board_array, map_height, map_width);
 }
 
