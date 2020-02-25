@@ -4,6 +4,12 @@ function main(){
 }
 
 function simulator_start() {
+    let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
+    [1,1,1,1,1,1,1,1,1,1], , [1,1,1,0,1,1,0,1,1,1],, [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
+
+    /* Rabbit 🐰 
+       Fox   &#x1F43A;
+    */
     document.getElementById("simulation").innerHTML = "";
 
     let thirst_start = Number(document.getElementById("thirst").value);
