@@ -3,11 +3,6 @@ function main(){
     document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
 }
 
-let response = fetch(url);
-if(reposnse.status != 400){
-    response = fetch(other_url)
-}
-
 function simulator_start() {
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
     [1,1,1,1,1,1,1,1,1,1], , [1,1,1,0,1,1,0,1,1,1],, [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
@@ -31,8 +26,8 @@ function simulator_start() {
     hunger_start = check_for_empty(hunger_start, 10);
     speed_start = check_for_empty(speed_start, 10);
     hp_start = check_for_empty(hp_start, 10);
-    map_width = check_for_empty(map_width, 20);
-    map_height = check_for_empty(map_height, 40);
+    map_width = check_for_empty(map_width, 40);
+    map_height = check_for_empty(map_height, 20);
     game_speed = check_for_empty(game_speed, 100);
     number_foxes = check_for_empty(number_foxes, 1);
     when_foxes = check_for_empty(when_foxes, 20);
@@ -42,7 +37,7 @@ function simulator_start() {
     document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
     document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
 
-    let board_array = create_board(map_width, map_height, map_width, map_height*map_width*5);
+    let board_array = create_board(map_width, map_height, map_width, map_height*map_width*4);
     print_board_to_doc(board_array, map_height, map_width);
 }
 
@@ -59,8 +54,8 @@ function print_board_to_doc(board, height, width){
         for(let j = 0; j < width; j++){
             let elem = document.createElement("img")
             elem.setAttribute("src", (board[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
-            elem.setAttribute("height", String(90/width + "%"));
-            elem.setAttribute("width", String(100/height  + "%"));
+            elem.setAttribute("height", String(90/height + "%"));
+            elem.setAttribute("width", String(100/width  + "%"));
             elem.setAttribute("margin", "0");
             elem.setAttribute("padding", "0");
             elem.setAttribute("display", "flex");
@@ -109,11 +104,28 @@ function create_board(board_size_width, board_size_height, random_water, close_w
         make_new_tile(board_size_width, board_size_height, board_array)
     }
 
+    board_array = no_single_islands(board_array, board_size_height, board_size_width);
+    board_array = no_single_islands(board_array, board_size_height, board_size_width);
+    board_array = no_single_islands(board_array, board_size_height, board_size_width);
+
     return board_array;
 }
 
+function no_single_islands(board, height, width){
+    let WATER = 0;
+
+    for(let i = 0; i < height; i++){
+        for(let j = 0; j < width; j++){
+            if(water_value(width, height, i, j, board) >= 0.75){
+                board[i][j] = WATER;
+            }
+        }
+    }
+    return board;
+}
+
 function give_random_int(high){
-    return parseInt(Math.random() * (high - 1));
+    return parseInt(Math.random() * (high));
 }
 
 function make_new_tile(board_size_width, board_size_height, board_array){
@@ -128,7 +140,7 @@ function make_new_tile(board_size_width, board_size_height, board_array){
     if there is no water pressented in the adjacent tiles. Each adjacent  */
     let closeness_to_water = water_value(board_size_width, board_size_height, x_cord, y_cord, board_array);
 
-    if(closeness_to_water * 100 + random_diviation() > 60){
+    if(closeness_to_water * 100 + random_diviation() > 56){
         board_array[x_cord][y_cord] = WATER;
         console.log("I made water!")
     }
@@ -140,9 +152,9 @@ function random_diviation(){
 
 function water_value(board_size_width, board_size_height, x, y, board_array){
     let true_water_value = 0;
-    let valid = 0;
-    for(let i = -1; i < 1; i++){
-        for(let j = -1; j < 1; j++){
+    let valid = -1;
+    for(let i = -1; i <= 1; i++){
+        for(let j = -1; j <= 1; j++){
             if(valid_tile(i + x, j + y, board_size_height, board_size_width) == true){
                 valid += 1;
                 if(is_tile_water(i + x, j + y, board_array) == true){
