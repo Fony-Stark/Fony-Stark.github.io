@@ -4,30 +4,57 @@ function main(){
 }
 
 function simulator_start() {
+    document.getElementById("simulation").innerHTML = "";
+
     let thirst_start = Number(document.getElementById("thirst").value);
     let hunger_start = Number(document.getElementById("hunger").value);
     let speed_start = Number(document.getElementById("speed").value);
     let hp_start = Number(document.getElementById("hp").value);
+    let map_width = Number(document.getElementById("horizontel").value);
+    let map_height = Number(document.getElementById("vertical").value);
+    let game_speed = Number(document.getElementById("game_speed").value);
+    let number_foxes = Number(document.getElementById("foxes").value);
+    let when_foxes = Number(document.getElementById("when_foxes").value);
 
-    document.getElementById("stats1").innerHTML = "Maximum HP on rabbits: " + (hp_start > 0 ? hp_start : 10);
-    document.getElementById("stats2").innerHTML = "Maximum speed for rabbits: " + (speed_start > 0 ? speed_start : 10);
-    document.getElementById("stats3").innerHTML = "minimum hunger limit: " + (hunger_start > 0 ? hunger_start : 10);
-    document.getElementById("stats4").innerHTML = "minimum thirst limit: " + (thirst_start > 0 ? thirst_start : 10);
+    thirst_start = check_for_empty(thirst_start, 10);
+    hunger_start = check_for_empty(hunger_start, 10);
+    speed_start = check_for_empty(speed_start, 10);
+    hp_start = check_for_empty(hp_start, 10);
+    map_width = check_for_empty(map_width, 20);
+    map_height = check_for_empty(map_height, 40);
+    game_speed = check_for_empty(game_speed, 100);
+    number_foxes = check_for_empty(number_foxes, 1);
+    when_foxes = check_for_empty(when_foxes, 20);
 
-    let height = 20;
-    let width = 40;
-    let board_array = create_board(height, width, 10, 40);
-    
+    document.getElementById("stats1").innerHTML = "Maximum HP on rabbits: " + hp_start;
+    document.getElementById("stats2").innerHTML = "Maximum speed for rabbits: " + speed_start;
+    document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
+    document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
+
+    let board_array = create_board(map_width, map_height, 10, map_height*map_width*map_width*map_height);
+    print_board_to_doc(board_array, map_height, map_width);
+}
+
+function check_for_empty(value, default_value){
+    if(value > 0){
+        return value;
+    } else {
+        return default_value;
+    }
+}
+
+function print_board_to_doc(board, height, width){
     for(let i = 0; i < height; i++){
         for(let j = 0; j < width; j++){
             let elem = document.createElement("img")
-            elem.setAttribute("src", (board_array[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
-            elem.setAttribute("height", String(90/height + "%"));
-            elem.setAttribute("width", String(100/width  + "%"));
+            elem.setAttribute("src", (board[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
+            elem.setAttribute("height", String(90/width + "%"));
+            elem.setAttribute("width", String(100/height  + "%"));
             elem.setAttribute("margin", "0");
             elem.setAttribute("padding", "0");
-            elem.setAttribute("display", "inline");
-            elem.setAttribute("alt", (board_array[i][j] == 1) ? "dirt" : "water");
+            elem.setAttribute("display", "flex");
+            elem.setAttribute("flex-grow", "1");
+            elem.setAttribute("alt", (board[i][j] == 1) ? "dirt" : "water");
             document.getElementById("simulation").appendChild(elem)
         }
     }
@@ -39,13 +66,13 @@ function create_board(board_size_width, board_size_height, random_water, close_w
 
     If this function should be upgraded, look into, make different water creation patternes.
 
-    the board_array, will exist of 1's and 0's, the 1's is a representation of the tile being grass and a 0 is a representation
+    the board_array, will exist of 1's and 0's, the 1's is a representation of the tile being dirt and a 0 is a representation
     of the tile being water.
     */
     let WATER = 0;
-    let GRASS = 1;
+    let DIRT = 1;
 
-    /* I start by making all the tiles in the board_array to be grass tiles. */
+    /* I start by making all the tiles in the board_array to be dirt tiles. */
     let board_array = new Array(board_size_height);
     for(let i = 0; i < board_size_height; i++){
         board_array[i] = new Array(board_size_width);
@@ -53,9 +80,11 @@ function create_board(board_size_width, board_size_height, random_water, close_w
 
     for(let i = 0; i < board_size_height; i++){
         for(let j = 0; j < board_size_width; j++){
-            board_array[i][j] = GRASS;
+            board_array[i][j] = DIRT;
         }
     }
+
+    console.log(board_array);
 
     /* next I randomly place a number of water tiles in the array. */
     for(let i = 0; i < random_water; i++){
@@ -79,7 +108,6 @@ function give_random_int(high){
 function make_new_tile(board_size_width, board_size_height, board_array){
     /* x, and y, are the cords, for where the new tile should be.
     */
-    let GRASS = 1;
     let WATER = 0;
 
     let x_cord = give_random_int(board_size_height);
@@ -89,28 +117,31 @@ function make_new_tile(board_size_width, board_size_height, board_array){
     if there is no water pressented in the adjacent tiles. Each adjacent  */
     let closeness_to_water = water_value(board_size_width, board_size_height, x_cord, y_cord, board_array);
 
-    if(closeness_to_water * 100 * Math.random > 60){
+    if(closeness_to_water * 100 + random_diviation() > 60){
         board_array[x_cord][y_cord] = WATER;
-    } else {
-        board_array[x_cord][y_cord] = GRASS;
+        console.log("I made water!")
     }
 }
 
+function random_diviation(){
+    return Math.random() * 40;
+}
+
 function water_value(board_size_width, board_size_height, x, y, board_array){
-    let water_value = 0;
+    let true_water_value = 0;
     let valid = 0;
     for(let i = -1; i < 1; i++){
         for(let j = -1; j < 1; j++){
             if(valid_tile(i + x, j + y, board_size_height, board_size_width) == true){
                 valid += 1;
                 if(is_tile_water(i + x, j + y, board_array) == true){
-                    water_value += 1;
+                    true_water_value += 1;
                 }
             }
         }
     }
-    if(water_value > 0 && valid > 0){
-        return (water_value/valid);
+    if(true_water_value > 0 && valid > 0){
+        return (true_water_value/valid);
     }
     else {
         return 0;
