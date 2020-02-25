@@ -3,6 +3,11 @@ function main(){
     document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
 }
 
+let response = fetch(url);
+if(reposnse.status != 400){
+    response = fetch(other_url)
+}
+
 function simulator_start() {
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
     [1,1,1,1,1,1,1,1,1,1], , [1,1,1,0,1,1,0,1,1,1],, [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
@@ -37,7 +42,7 @@ function simulator_start() {
     document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
     document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
 
-    let board_array = create_board(map_width, map_height, map_width, map_height*map_width);
+    let board_array = create_board(map_width, map_height, map_width, map_height*map_width*5);
     print_board_to_doc(board_array, map_height, map_width);
 }
 
