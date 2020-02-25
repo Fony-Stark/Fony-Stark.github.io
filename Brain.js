@@ -20,8 +20,8 @@ function simulator_start() {
     hunger_start = check_for_empty(hunger_start, 10);
     speed_start = check_for_empty(speed_start, 10);
     hp_start = check_for_empty(hp_start, 10);
-    map_width = check_for_empty(map_width, 20);
-    map_height = check_for_empty(map_height, 40);
+    map_width = check_for_empty(map_width, 40);
+    map_height = check_for_empty(map_height, 20);
     game_speed = check_for_empty(game_speed, 100);
     number_foxes = check_for_empty(number_foxes, 1);
     when_foxes = check_for_empty(when_foxes, 20);
