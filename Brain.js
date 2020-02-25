@@ -1,3 +1,12 @@
+class Animal {
+    constructor(x_cord, y_cord){
+        this.x_cord = x_cord; 
+        this.y_cord = y_cord;
+    }
+
+    
+}
+
 function main(){
     event_listeners();
     document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
@@ -37,7 +46,7 @@ function simulator_start() {
     document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
     document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
 
-    let board_array = create_board(map_width, map_height, map_width, map_height*map_width*4);
+    let board_array = create_board(map_width, map_height, (map_width*map_height)/(25), (map_height*map_width)/(0.5));
     print_board_to_doc(board_array, map_height, map_width);
 }
 
@@ -92,9 +101,15 @@ function create_board(board_size_width, board_size_height, random_water, close_w
 
     console.log(board_array);
 
+    let x_cord;
+    let y_cord;
     /* next I randomly place a number of water tiles in the array. */
     for(let i = 0; i < random_water; i++){
-        board_array[give_random_int(board_size_height)][give_random_int(board_size_width)] = WATER;
+        do{
+        x_cord = give_random_int(board_size_height);
+        y_cord = give_random_int(board_size_width);
+        } while(board_array[x_cord][y_cord] == WATER);
+        board_array[x_cord][y_cord] = WATER;
     }
 
     /* I than start finding random places on the map, and depending on how many water blocks is near the tile, it has a higher
@@ -104,7 +119,6 @@ function create_board(board_size_width, board_size_height, random_water, close_w
         make_new_tile(board_size_width, board_size_height, board_array)
     }
 
-    board_array = no_single_islands(board_array, board_size_height, board_size_width);
     board_array = no_single_islands(board_array, board_size_height, board_size_width);
     board_array = no_single_islands(board_array, board_size_height, board_size_width);
 
@@ -140,7 +154,7 @@ function make_new_tile(board_size_width, board_size_height, board_array){
     if there is no water pressented in the adjacent tiles. Each adjacent  */
     let closeness_to_water = water_value(board_size_width, board_size_height, x_cord, y_cord, board_array);
 
-    if(closeness_to_water * 100 + random_diviation() > 56){
+    if(closeness_to_water * 100 + random_diviation() > 50){
         board_array[x_cord][y_cord] = WATER;
         console.log("I made water!")
     }
