@@ -34,15 +34,15 @@ function simulator_start() {
     */
     document.getElementById("simulation").innerHTML = "";
 
-    let thirst_start = Number(document.getElementById("thirst").value);
-    let hunger_start = Number(document.getElementById("hunger").value);
-    let speed_start = Number(document.getElementById("speed").value);
-    let hp_start = Number(document.getElementById("hp").value);
-    let map_width = Number(document.getElementById("horizontel").value);
-    let map_height = Number(document.getElementById("vertical").value);
-    let game_speed = Number(document.getElementById("game_speed").value);
-    let number_foxes = Number(document.getElementById("foxes").value);
-    let when_foxes = Number(document.getElementById("when_foxes").value);
+    let thirst_start = parseInt(document.getElementById("thirst").value);
+    let hunger_start = parseInt(document.getElementById("hunger").value);
+    let speed_start = parseInt(document.getElementById("speed").value);
+    let hp_start = parseInt(document.getElementById("hp").value);
+    let map_width = parseInt(document.getElementById("horizontel").value);
+    let map_height = parseInt(document.getElementById("vertical").value);
+    let game_speed = parseInt(document.getElementById("game_speed").value);
+    let number_foxes = parseInt(document.getElementById("foxes").value);
+    let when_foxes = parseInt(document.getElementById("when_foxes").value);
 
     thirst_start = check_for_empty(thirst_start, 10);
     hunger_start = check_for_empty(hunger_start, 10);
