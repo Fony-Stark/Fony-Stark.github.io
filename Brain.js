@@ -3,13 +3,20 @@ class Animal {
         this.x_cord = x_cord; 
         this.y_cord = y_cord;
     }
-
-
 }
 
+/*  In the animal list, the texture of the Rabbit is 1 and the texture of the Fox is 2. */
 class rabbit extends Animal{
-    constructor(){
-        this.value = 2;
+    constructor(x_cord, y_cord){
+        super(x_cord, y_cord);
+        this.texture = 1;
+    }
+}
+
+class fox extends Animal{
+    constructor(x_cord, y_cord){
+        super(x_cord, y_cord);
+        this.texture = 2;
     }
 }
 
@@ -126,7 +133,6 @@ function create_board(board_size_width, board_size_height, random_water, close_w
     }
 
     board_array = no_single_islands(board_array, board_size_height, board_size_width);
-    board_array = no_single_islands(board_array, board_size_height, board_size_width);
 
     return board_array;
 }
@@ -134,13 +140,16 @@ function create_board(board_size_width, board_size_height, random_water, close_w
 function no_single_islands(board, height, width){
     let WATER = 0;
 
-    for(let i = 0; i < height; i++){
-        for(let j = 0; j < width; j++){
-            if(water_value(width, height, i, j, board) >= 0.75){
-                board[i][j] = WATER;
+    for(let k = 0; k < 8; k++){
+        for(let i = 0; i < height; i++){
+            for(let j = 0; j < width; j++){
+                if(water_value(width, height, i, j, board) >= (0.55)){
+                    board[i][j] = WATER;
+                }
             }
         }
     }
+
     return board;
 }
 
