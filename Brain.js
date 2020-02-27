@@ -20,6 +20,16 @@ class fox extends Animal{
     }
 }
 
+class tile {
+    constructor(basic_value, plant_or_not, A1, A2, A3){
+        this.basic = basic_value;
+        this.plant = plant_or_not;
+        this.animal_1 = A1;
+        this.animal_2 = A2;
+        this.animal_3 = A3;
+    }
+}
+
 function main(){
     event_listeners();
     document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
@@ -34,6 +44,7 @@ function simulator_start() {
     */
     document.getElementById("simulation").innerHTML = "";
 
+    /* This reads the information, which the user can parse into the input-boxes. */
     let thirst_start = parseInt(document.getElementById("thirst").value);
     let hunger_start = parseInt(document.getElementById("hunger").value);
     let speed_start = parseInt(document.getElementById("speed").value);
@@ -44,6 +55,7 @@ function simulator_start() {
     let number_foxes = parseInt(document.getElementById("foxes").value);
     let when_foxes = parseInt(document.getElementById("when_foxes").value);
 
+    /* This set the value of the variables to the default, if an invalid or no value has been given by the user. */
     thirst_start = check_for_empty(thirst_start, 10);
     hunger_start = check_for_empty(hunger_start, 10);
     speed_start = check_for_empty(speed_start, 10);
@@ -54,13 +66,38 @@ function simulator_start() {
     number_foxes = check_for_empty(number_foxes, 1);
     when_foxes = check_for_empty(when_foxes, 20);
 
+    /* This is just a test, to see how to write to the stats bar. */
     document.getElementById("stats1").innerHTML = "Maximum HP on rabbits: " + hp_start;
     document.getElementById("stats2").innerHTML = "Maximum speed for rabbits: " + speed_start;
     document.getElementById("stats3").innerHTML = "minimum hunger limit: " + hunger_start;
     document.getElementById("stats4").innerHTML = "minimum thirst limit: " + thirst_start;
 
+    /* This creates the board. too see more details, please look into the function
+       It takes 4 parameters, the height of the map, the width of the map, how many random water blocks should
+       be enterd in the first place and how many times it should try to place a new water block. */
     let board_array = create_board(map_width, map_height, (map_width*map_height)/(25), (map_height*map_width)/(0.5));
+    
+    /* Now, the basic board is written into the DOM in the form of images, in the simulation container. */
     print_board_to_doc(board_array, map_height, map_width);
+
+    /* The reactive map is made. */
+    let reactive_board = create_reactive_board(map_width, map_height, board_array);
+}
+
+function create_reactive_board(map_height, map_width, basic_board){
+    /* Starts by creating a 2d Array, with the proper dimensions. */
+    let reactive_board = Array(map_height);
+    for(let i = 0; i < map_width; i++){
+        reactive_board[i] = Array(map_width);
+    }
+
+    /* I start refering to the tile, class made at the top of this script. */
+    for(let i = 0; i < map_width; i++){
+        for(let j = 0; j < map_height; j++){
+            reactive_board[i][j] = new tile(basic_board[i][j], 0, 0, 0, 0)
+        }
+    }
+
 }
 
 function check_for_empty(value, default_value){
@@ -74,9 +111,20 @@ function check_for_empty(value, default_value){
 function print_board_to_doc(board, height, width){
     for(let i = 0; i < height; i++){
         for(let j = 0; j < width; j++){
+            /*
+            let elem = document.createElement("div")
+            elem.style.backgroundColor = (board[i][j] == 1) ? ("brown;") : ("blue;");
+            elem.style.height = String(90/height + "vh;");
+            elem.style.width = ("width", String(100/width  + "vw"));
+            elem.setAttribute("margin", "0");
+            elem.setAttribute("padding", "0");
+            elem.setAttribute("display", "flex");
+            elem.setAttribute("flex-grow", "1");
+            document.getElementById("simulation").appendChild(elem)
+            */
             let elem = document.createElement("img")
             elem.setAttribute("src", (board[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
-            elem.setAttribute("height", String(90/height + "%"));
+            elem.setAttribute("height", String(100/height + "%"));
             elem.setAttribute("width", String(100/width  + "%"));
             elem.setAttribute("margin", "0");
             elem.setAttribute("padding", "0");
@@ -84,6 +132,7 @@ function print_board_to_doc(board, height, width){
             elem.setAttribute("flex-grow", "1");
             elem.setAttribute("alt", (board[i][j] == 1) ? "dirt" : "water");
             document.getElementById("simulation").appendChild(elem)
+
         }
     }
 }

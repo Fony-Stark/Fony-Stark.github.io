@@ -204,9 +204,11 @@ body {
     width: 94vw;
     padding: 0;
     margin-bottom: 0;
+
 }
 
 #simulation {
+    align-content: flex-start;
     display: flex;
     padding-top: 1vh;
     padding-bottom: 1vh;
