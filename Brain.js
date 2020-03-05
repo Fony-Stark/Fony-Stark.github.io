@@ -1,21 +1,72 @@
+let ID = 0;
+
 class Animal {
-    constructor(x_cord, y_cord){
-        this.x_cord = x_cord; 
+    constructor(x_cord, y_cord, map_height, map_width){
+        this.x_cord = x_cord;
         this.y_cord = y_cord;
+        this.map_height = map_height;
+        this.map_width = map_width;
+        this.id = ID++;
+    }
+
+    make_visible_character(){
+        console.log("Hello, I'm creating an animal " + this.y_cord + " is the y_cord")
+        console.log("Hello, I'm creating an animal " + this.x_cord + " is the x_cord")
+        let RABBIT = 1; let FOX = 2;
+        let style_string = "transition: 0.6s; ";
+
+        let elem = document.createElement("div");
+        style_string += "height:" + String(67/this.map_height - 2) + "vh; ";
+        style_string += "width:" + String(72/this.map_width - 2)+ "vw; ";
+        style_string += "position:" + "absolute; ";
+        style_string += "top:" + String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh; ";
+        style_string += "left:" + String(72/this.map_width * (this.y_cord + 1)- 0.6) + "vw; ";
+        style_string += "margin:" + "0; ";
+        style_string += "padding:" + "0; ";
+        elem.setAttribute("id", String(this.id));
+        elem.setAttribute("style", style_string);
+        switch(this.texture){
+            case FOX:
+                elem.innerHTML = "🐺";
+                break;
+            case RABBIT:
+                elem.innerHTML = "🐰";
+                break;
+            default:
+                /* Do nothing, this should not happen */
+                console.log("This should not happen");
+        }
+        document.getElementById("simulation").appendChild(elem);
+    }
+
+    look_around(){
+        console.log("I looked around")
+    }
+
+    move_emoji(){
+        document.getElementById(String(this.id)).style.top = String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh";
+        document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 1) - 0.6) + "vw";
     }
 }
 
 /*  In the animal list, the texture of the Rabbit is 1 and the texture of the Fox is 2. */
+class naught extends Animal{
+    constructor(x_cord, y_cord, map_height, map_width){
+        super(x_cord, y_cord, map_height, map_width)
+        this.texture = 0;
+    }
+}
+
 class rabbit extends Animal{
-    constructor(x_cord, y_cord){
-        super(x_cord, y_cord);
+    constructor(x_cord, y_cord, map_height, map_width){
+        super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
     }
 }
 
 class fox extends Animal{
-    constructor(x_cord, y_cord){
-        super(x_cord, y_cord);
+    constructor(x_cord, y_cord, map_height, map_width){
+        super(x_cord, y_cord, map_height, map_width);
         this.texture = 2;
     }
 }
@@ -32,9 +83,10 @@ class tile {
 
 function main(){
     event_listeners();
-    document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")});
+    /* document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")}); */
 }
 
+let reactive_board;
 function simulator_start() {
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
     [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
@@ -81,26 +133,52 @@ function simulator_start() {
     print_board_to_doc(board_array, map_height, map_width);
 
     /* The reactive map is made. */
-    let reactive_board = create_reactive_board(map_width, map_height, board_array);
+    reactive_board = create_reactive_board(map_height, map_width, board_array);
+    for(let i = 0; i < map_height; i++){
+        for(let j = 0; j < map_width; j++){
+            if(reactive_board[i][j].animal_1.texture == 1){
+                reactive_board[i][j].animal_1.look_around();
+                reactive_board[i][j].animal_1.make_visible_character();
+
+            }
+        }
+    }
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
+    let DIRT = 1; 
     /* Starts by creating a 2d Array, with the proper dimensions. */
-    let reactive_board = Array(map_height);
-    for(let i = 0; i < map_width; i++){
-        reactive_board[i] = Array(map_width);
+    let reactive_board = new Array(map_height);
+    for(let i = 0; i < map_height; i++){
+        reactive_board[i] = new Array(map_width);
     }
 
     /* I start refering to the tile, class made at the top of this script. */
-    for(let i = 0; i < map_width; i++){
-        for(let j = 0; j < map_height; j++){
-            reactive_board[i][j] = new tile(basic_board[i][j], 0, 0, 0, 0)
+    for(let i = 0; i < map_height; i++){
+        for(let j = 0; j < map_width; j++){
+            reactive_board[i][j] = new tile(basic_board[i][j], 0, new naught(i, j), new naught(i, j), new naught(i, j))
         }
     }
 
+    for(let i = 0; i < 3; i++){
+        while(true){
+            let x = give_random_int(map_height);
+            let y = give_random_int(map_width);
+
+            console.log(x, y)
+
+            if(reactive_board[x][y].basic == DIRT){
+                reactive_board[x][y].animal_1 = new rabbit(x, y, map_height, map_width);
+                break;
+            }
+        }
+    }
+
+    return reactive_board;
 }
 
 function check_for_empty(value, default_value){
+    /* This function checks if any of the input fields, are empty. */
     if(value > 0){
         return value;
     } else {
@@ -122,7 +200,7 @@ function print_board_to_doc(board, height, width){
             elem.setAttribute("flex-grow", "1");
             document.getElementById("simulation").appendChild(elem)
             */
-            let elem = document.createElement("img")
+            let elem = document.createElement("img");
             elem.setAttribute("src", (board[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
             elem.setAttribute("height", String(100/height + "%"));
             elem.setAttribute("width", String(100/width  + "%"));
@@ -131,8 +209,7 @@ function print_board_to_doc(board, height, width){
             elem.setAttribute("display", "flex");
             elem.setAttribute("flex-grow", "1");
             elem.setAttribute("alt", (board[i][j] == 1) ? "dirt" : "water");
-            document.getElementById("simulation").appendChild(elem)
-
+            document.getElementById("simulation").appendChild(elem);
         }
     }
 }
@@ -171,7 +248,7 @@ function create_board(board_size_width, board_size_height, random_water, close_w
         x_cord = give_random_int(board_size_height);
         y_cord = give_random_int(board_size_width);
         } while(board_array[x_cord][y_cord] == WATER);
-        board_array[x_cord][y_cord] = WATER;
+            board_array[x_cord][y_cord] = WATER;
     }
 
     /* I than start finding random places on the map, and depending on how many water blocks is near the tile, it has a higher
@@ -299,8 +376,8 @@ function event_listeners(){
             document.getElementById("container").style.height = "81vh";
             /* document.getElementById("advanced_hidden").style.display = "none"; */
         }
-
     }
+
     let toggle_left_bar = 0;
     let toggle_settings = 0;
 
