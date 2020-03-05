@@ -208,6 +208,7 @@ body {
 }
 
 #simulation {
+    position: relative;
     align-content: flex-start;
     display: flex;
     padding-top: 1vh;
