@@ -6,7 +6,6 @@ class Animal {
         this.y_cord = y_cord;
         this.map_height = map_height;
         this.map_width = map_width;
-        this.id = ID++;
     }
 
     make_visible_character(){
@@ -16,11 +15,10 @@ class Animal {
         let style_string = "transition: 0.6s; ";
 
         let elem = document.createElement("div");
-        style_string += "height:" + String(67/this.map_height - 2) + "vh; ";
-        style_string += "width:" + String(72/this.map_width - 2)+ "vw; ";
+        style_string += "font-size:" + (String(36/(this.map_height)) + "vh; ");
         style_string += "position:" + "absolute; ";
-        style_string += "top:" + String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh; ";
-        style_string += "left:" + String(72/this.map_width * (this.y_cord + 1)- 0.6) + "vw; ";
+        style_string += "top:" + String(66/this.map_height * (this.x_cord+0.25)+1) + "vh; ";
+        style_string += "left:" + String(72/(this.map_width) * (this.y_cord+0.25)+1) + "vw; ";
         style_string += "margin:" + "0; ";
         style_string += "padding:" + "0; ";
         elem.setAttribute("id", String(this.id));
@@ -54,6 +52,7 @@ class naught extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width)
         this.texture = 0;
+        this.id = 0;
     }
 }
 
@@ -61,6 +60,13 @@ class rabbit extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
+        this.id = ID++;
+        this.hunger = 0;
+        this.thirst = 0;
+    }
+    
+    my_priorities(){
+
     }
 }
 
@@ -68,6 +74,11 @@ class fox extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 2;
+        this.id = ID++;
+    }
+
+    my_priorities(){
+
     }
 }
 
@@ -143,6 +154,14 @@ function simulator_start() {
             }
         }
     }
+    one_step_simulation(reactive_board, map_height, map_width);
+}
+
+function one_step_simulation(reactive_board, map_height, map_width){
+    /* reactive_animals(reactive_board, map_height, map_width);
+    
+    
+    */
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
@@ -168,6 +187,7 @@ function create_reactive_board(map_height, map_width, basic_board){
             console.log(x, y)
 
             if(reactive_board[x][y].basic == DIRT){
+                console.log("Please don't!");
                 reactive_board[x][y].animal_1 = new rabbit(x, y, map_height, map_width);
                 break;
             }
@@ -189,17 +209,6 @@ function check_for_empty(value, default_value){
 function print_board_to_doc(board, height, width){
     for(let i = 0; i < height; i++){
         for(let j = 0; j < width; j++){
-            /*
-            let elem = document.createElement("div")
-            elem.style.backgroundColor = (board[i][j] == 1) ? ("brown;") : ("blue;");
-            elem.style.height = String(90/height + "vh;");
-            elem.style.width = ("width", String(100/width  + "vw"));
-            elem.setAttribute("margin", "0");
-            elem.setAttribute("padding", "0");
-            elem.setAttribute("display", "flex");
-            elem.setAttribute("flex-grow", "1");
-            document.getElementById("simulation").appendChild(elem)
-            */
             let elem = document.createElement("img");
             elem.setAttribute("src", (board[i][j] == 1) ? ("images/dirt.jpg") : ("images/water.jpg"));
             elem.setAttribute("height", String(100/height + "%"));
