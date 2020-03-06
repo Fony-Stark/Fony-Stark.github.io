@@ -1,4 +1,4 @@
-let ID = 0;
+let ID = 1;
 
 class Animal {
     constructor(x_cord, y_cord, map_height, map_width){
@@ -9,9 +9,9 @@ class Animal {
     }
 
     make_visible_character(){
-        console.log("Hello, I'm creating an animal " + this.y_cord + " is the y_cord")
-        console.log("Hello, I'm creating an animal " + this.x_cord + " is the x_cord")
-        let RABBIT = 1; let FOX = 2;
+        /* console.log("Hello, I'm creating an animal " + this.y_cord + " is the y_cord")
+        console.log("Hello, I'm creating an animal " + this.x_cord + " is the x_cord") */
+        let RABBIT = 1; let FOX = 2; let PLANT = 3;
         let style_string = "transition: 0.6s; ";
 
         let elem = document.createElement("div");
@@ -30,6 +30,9 @@ class Animal {
             case RABBIT:
                 elem.innerHTML = "🐰";
                 break;
+            case PLANT:
+                elem.innerHTML = "🍀";
+                break
             default:
                 /* Do nothing, this should not happen */
                 console.log("This should not happen");
@@ -37,13 +40,38 @@ class Animal {
         document.getElementById("simulation").appendChild(elem);
     }
 
-    look_around(){
-        console.log("I looked around")
+    look_around(view, reactive_board){
+        let temp_x;
+        let temp_y;
+
+        let array2d = Array(view*2 + 1);
+        for(let i = 0; i <= view*2; i++){
+            array2d[i] = Array(view*2 + 1);
+        } 
+        for(let i = -3; i <= view; i++){
+            for(let j = -3; j <= view; j++){
+                if((i + this.x_cord >= 0) && (j + this.y_cord >= 0) && (i + this.x_cord < this.map_height) && (j + this.y_cord < this.map_width) && (normerisk(i) + normerisk(j) < 5)){
+                    temp_x = i + 3;
+                    temp_y = j + 3;
+                    array2d[temp_x][temp_y] = reactive_board[i + this.x_cord][j + this.y_cord];
+                }
+            }
+        }
+        console.log(array2d);
+        return array2d;
     }
 
     move_emoji(){
         document.getElementById(String(this.id)).style.top = String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh";
         document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 1) - 0.6) + "vw";
+    }
+}
+
+function normerisk(number){
+    if(number < 0){
+        return -number;
+    } else{
+        return number;
     }
 }
 
@@ -60,9 +88,10 @@ class rabbit extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
-        this.id = ID++;
+        this.id = ID;
         this.hunger = 0;
         this.thirst = 0;
+        ID++;
     }
     
     my_priorities(){
@@ -74,7 +103,8 @@ class fox extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 2;
-        this.id = ID++;
+        this.id = ID;
+        ID++;
     }
 
     my_priorities(){
@@ -99,6 +129,7 @@ function main(){
 
 let reactive_board;
 function simulator_start() {
+    ID = 1;
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
     [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
 
@@ -148,7 +179,7 @@ function simulator_start() {
     for(let i = 0; i < map_height; i++){
         for(let j = 0; j < map_width; j++){
             if(reactive_board[i][j].animal_1.texture == 1){
-                reactive_board[i][j].animal_1.look_around();
+                reactive_board[i][j].animal_1.look_around(3, reactive_board);
                 reactive_board[i][j].animal_1.make_visible_character();
 
             }
@@ -187,7 +218,6 @@ function create_reactive_board(map_height, map_width, basic_board){
             console.log(x, y)
 
             if(reactive_board[x][y].basic == DIRT){
-                console.log("Please don't!");
                 reactive_board[x][y].animal_1 = new rabbit(x, y, map_height, map_width);
                 break;
             }
