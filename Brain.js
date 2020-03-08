@@ -17,6 +17,7 @@ class Animal {
         let elem = document.createElement("div");
         style_string += "font-size:" + (String(36/(this.map_height)) + "vh; ");
         style_string += "position:" + "absolute; ";
+        style_string += "user-select: none; ";
         style_string += "top:" + String(66/this.map_height * (this.x_cord+0.25)+1) + "vh; ";
         style_string += "left:" + String(72/(this.map_width) * (this.y_cord+0.25)+1) + "vw; ";
         style_string += "margin:" + "0; ";
@@ -35,7 +36,7 @@ class Animal {
                 break
             default:
                 /* Do nothing, this should not happen */
-                console.log("This should not happen");
+                console.log("This should not happen: WRONG TEXTURE FOR ELEMENT", this);
         }
         document.getElementById("simulation").appendChild(elem);
     }
@@ -65,6 +66,42 @@ class Animal {
         document.getElementById(String(this.id)).style.top = String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh";
         document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 1) - 0.6) + "vw";
     }
+
+    my_priorities(){
+        /* hungry = 1; thirsty = 2; horny = 3; discover = 4; */
+        let largest = this.discover;
+        let code_to_return = 4;
+        if(this.hunger > largest){
+            largest = this.hunger;
+            code_to_return = 1;
+        }
+        if(this.thirst > largest){
+            largest = this.thirst;
+            code_to_return = 2;
+        }
+        if(this.horny > largest){
+            largest = this.hunger;
+            code_to_return = 3;
+        }
+        return code_to_return;
+    }
+
+    find_way(wanted_texture, reactive_board){
+        let DIRT = 1;
+        let posible_roads = Array();
+        /* initiating the loop */
+        for(let i = -1; i <= 1; i++){
+            for(let j = -1; j <= 1; j++){
+                if(reactive_board[this.x_cord + i][this.y_cord + j].basic == DIRT && reactive_board[this.x_cord + i][this.y_cord + j].free_animal_space() == 200){
+                    posible_roads.push([this.x_cord, this.y_cord, this.x_cord + i, this.y_cord + j]);
+                }
+            }
+        }
+
+        while(true){
+            console.log("hello");
+        }
+    }
 }
 
 function normerisk(number){
@@ -85,17 +122,55 @@ class naught extends Animal{
 }
 
 class rabbit extends Animal{
-    constructor(x_cord, y_cord, map_height, map_width){
+    constructor(x_cord, y_cord, map_height, map_width, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
         this.id = ID;
         this.hunger = 0;
         this.thirst = 0;
+        this.horny  = 0;
+        this.min_thirst = thirst_basic;
+        this.min_hunger = hunger_basic;
+        this.min_horny  = horny_basic;
+        this.discover   = discover_basic;
         ID++;
     }
-    
-    my_priorities(){
 
+    age(){
+        this.hunger++;
+        this.thirst++;
+        this.horny++;
+    }
+}
+
+class plant extends Animal{
+    constructor(x_cord, y_cord, map_height, map_width){
+        super(x_cord, y_cord, map_height, map_width);
+        this.texture = 3;
+    }
+
+    check_for_spread(board_array, reactive_board){
+        let water_val = water_value(this.map_width, this.map_height, this.x_cord, this.y_cord, board_array);
+        if(Math.random()*100 > 85 - (water_val*0.1)){
+            this.spread(reactive_board);
+        }
+    }
+
+    spread(reactive_board){
+        let DIRT = 1;
+        for(let i = -1; i < 2; i++){
+            for(let j = -1; j < 2; j++){
+                if(!(i == 0 && j == 0 ) && (i + this.x_cord >= 0 && i + this.x_cord < this.map_height) && 
+                (j + this.y_cord >= 0 && j + this.y_cord < this.map_width) && reactive_board[this.x_cord + i][this.y_cord+j].basic == DIRT
+                && reactive_board[this.x_cord + i][this.y_cord+j].plant == 0){
+                    reactive_board[this.x_cord + i][this.y_cord+j].plant = new plant(this.x_cord + i, this.y_cord+j, this.map_height, this.map_width);
+                    reactive_board[this.x_cord + i][this.y_cord+j].plant.make_visible_character();
+                    return 200;
+                }
+            }
+        }
+
+        return 400;
     }
 }
 
@@ -108,7 +183,9 @@ class fox extends Animal{
     }
 
     my_priorities(){
-
+        ;
+        ;
+        ;
     }
 }
 
@@ -119,6 +196,46 @@ class tile {
         this.animal_1 = A1;
         this.animal_2 = A2;
         this.animal_3 = A3;
+    }
+
+    place_object(object){
+        let RABBIT = 1; let FOX = 2; let NAUGHT = 0; let PLANT = 3;
+        if(object.texture == PLANT){
+            if(this.plant == 0){
+                this.plant = 1;
+                return 200;
+            } else {
+                return 400;
+            }
+        }
+
+        if(this.animal_1.texture == NAUGHT){
+            this.animal_1 = object;
+        }
+        else if(this.animal_2.texture == NAUGHT){
+            this.animal_2 = object;
+        }
+        else if(this.animal_3.texture == NAUGHT){
+            this.animal_3 = object;
+        } else {
+            return 400;
+        }
+        return 200;
+    }
+
+    free_animal_space(){
+        if(this.animal_1.texture == NAUGHT){
+            return 200;
+        }
+        else if(this.animal_2.texture == NAUGHT){
+            return 200;
+        }
+        else if(this.animal_3.texture == NAUGHT){
+            return 200;
+        } else {
+            return 400;
+        }
+        return 200;
     }
 }
 
@@ -185,6 +302,10 @@ function simulator_start() {
             }
         }
     }
+
+    create_object_random(1, 4, map_height, map_width, reactive_board);
+    create_object_random(3, 10, map_height, map_width, reactive_board);
+
     one_step_simulation(reactive_board, map_height, map_width);
 }
 
@@ -193,6 +314,7 @@ function one_step_simulation(reactive_board, map_height, map_width){
     
     
     */
+   
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
@@ -210,21 +332,47 @@ function create_reactive_board(map_height, map_width, basic_board){
         }
     }
 
-    for(let i = 0; i < 3; i++){
+    return reactive_board;
+}
+
+function create_object_random(texture, number_of_objects, map_height, map_width, reactive_board){
+    /* This function has a bit too many nested loops and if-statements. But it works fine, and should be fairly
+       readable, so you are welcome!! */
+    let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3;
+    let object;
+
+    for(let i = 0; i < number_of_objects; i++){
         while(true){
-            let x = give_random_int(map_height);
-            let y = give_random_int(map_width);
+            let x_cord = give_random_int(map_height);
+            let y_cord = give_random_int(map_width);
+            let current_tile = reactive_board[x_cord][y_cord];
 
-            console.log(x, y)
+            if(current_tile.basic == 1){
+                switch(texture){
+                    case NAUGHT:
+                        object = new naught(x_cord, y_cord, map_height, map_width);
+                        break;
+                    case RABBIT:
+                        object = new rabbit(x_cord, y_cord, map_height, map_width);
+                        break;
+                    case FOX:
+                        object = new fox(x_cord, y_cord, map_height, map_width);
+                        break;
+                    case PLANT:
+                        object = new plant(x_cord, y_cord, map_height, map_width);
+                        break;
+                    default:
+                        /* THis should not happen */
+                        console.log("function create_object_random(), was given a texture which it doesn't support");
+                }
 
-            if(reactive_board[x][y].basic == DIRT){
-                reactive_board[x][y].animal_1 = new rabbit(x, y, map_height, map_width);
-                break;
+                if(reactive_board[x_cord][y_cord].place_object(object) == 200){
+                    object.make_visible_character();
+                    break;
+                }
             }
         }
     }
-
-    return reactive_board;
 }
 
 function check_for_empty(value, default_value){
