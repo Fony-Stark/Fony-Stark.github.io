@@ -6,6 +6,8 @@ class Animal {
         this.y_cord = y_cord;
         this.map_height = map_height;
         this.map_width = map_width;
+        this.last_x = x_cord;
+        this.last_y = y_cord;
     }
 
     make_visible_character(){
@@ -63,8 +65,8 @@ class Animal {
     }
 
     move_emoji(){
-        document.getElementById(String(this.id)).style.top = String(67/this.map_height * (this.x_cord + 1) - 2.3) + "vh";
-        document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 1) - 0.6) + "vw";
+        document.getElementById(String(this.id)).style.top =  String(66/this.map_height * (this.x_cord+0.25)+1) + "vh";
+        document.getElementById(String(this.id)).style.left = String(72/(this.map_width) * (this.y_cord+0.25)+1) + "vw";
     }
 
     my_priorities(){
@@ -83,24 +85,208 @@ class Animal {
             largest = this.hunger;
             code_to_return = 3;
         }
+
         return code_to_return;
+    }
+
+    make_a_move(reactive_board){
+        let HUNGRY = 1; let THIRSTY = 2; let HORNY = 3; let DISCOVER = 4;
+        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; let WATER = 4;
+        let higest_priority = this.my_priorities();
+        let need; let road;
+        switch(higest_priority){
+            case HUNGRY:
+                need = (this.texture == RABBIt) ? PLANT : RABBIT;
+                break;
+            case THIRSTY:
+                need = WATER;
+                break;
+            case HORNY:
+                need = (this.texture == RABBIT) ? RABBIT : FOX;
+                break;
+            case DISCOVER:
+                need = NAUGHT;
+                break;
+            default:
+                /* Should not happen */
+                console.log("SOmething wants something, which is not hard-coded");
+        }
+        if(need != NAUGHT){
+            road = this.find_way(need, reactive_board);
+        }
+
+        if(need == NAUGHT || road == 400){
+            let new_move = this.go_discover(reactive_board);
+            this.move_actual_position(new_move[0], new_move[1], reactive_board);
+            this.move_emoji();
+
+        } else {
+            let new_x = road[0][-1];
+            let new_y = road[1][-1];
+            this.move_actual_position(new_x, new_y, reactive_board);
+            this.move_emoji();
+        }
+
+        return 200;
+    }
+
+    go_discover(reactive_board){
+        let DIRT = 1; let NAUGHT = 0;
+        let x_direction = this.x_cord - this.last_x;
+        let y_direction = this.y_cord - this.last_y;
+
+        if(x_direction + this.x_cord < 0 || x_direction + this.x_cord >= this.map_height){
+            x_direction = 0;
+        }
+        if(y_direction + this.y_cord < 0 || y_direction + this.y_cord >= this.map_width){
+            y_direction = 0;
+        }
+
+        if(x_direction == 0 && y_direction == 0){
+            while(true){
+                if(Math.random() >= 0.5){
+                    x_direction = (Math.random() >= 0.25) ? 1  : 0;
+                } else {
+                    x_direction = (Math.random() >= 0.25) ? -1 : 0;
+                }
+
+                if(Math.random() >= 0.5){
+                    y_direction = (Math.random() >= 0.25) ? 1  : 0;
+                } else {
+                    y_direction = (Math.random() >= 0.25) ? -1 : 0;
+                }
+                if(this.x_cord + x_direction >= 0 && this.x_cord + x_direction < this.map_height && this.y_cord + y_direction >= 0 && this.y_cord + y_direction < this.map_width &&
+                    reactive_board[this.x_cord + x_direction][this.y_cord + y_direction].basic == DIRT && !(y_direction == 0 && x_direction == 0 ) &&
+                    reactive_board[this.x_cord + x_direction][this.y_cord + y_direction].free_animal_space(NAUGHT) == 200){
+                    return [this.x_cord + x_direction, this.y_cord + y_direction];
+                }
+            }
+        } else {
+            if(this.x_cord + x_direction >= 0 && this.x_cord + x_direction < this.map_height && this.y_cord + y_direction >= 0 && this.y_cord + y_direction < this.map_width &&
+                reactive_board[x_direction + this.x_cord][y_direction + this.y_cord].basic == DIRT && 
+                reactive_board[x_direction + this.x_cord][y_direction + this.y_cord].free_animal_space(NAUGHT) == 200){
+                    
+                    return [this.x_cord + x_direction, this.y_cord + y_direction];
+            }
+            else if(this.y_cord + y_direction >= 0 && this.y_cord + y_direction < this.map_width &&
+                reactive_board[this.x_cord][y_direction + this.y_cord].basic == DIRT && 
+                reactive_board[this.x_cord][y_direction + this.y_cord].free_animal_space(NAUGHT) == 200){
+
+                    return [this.x_cord, this.y_cord + y_direction];
+            }
+            else if(this.x_cord + x_direction >= 0 && this.x_cord + x_direction < this.map_height &&
+                reactive_board[x_direction + this.x_cord][this.y_cord].basic == DIRT && 
+                reactive_board[x_direction + this.x_cord][this.y_cord].free_animal_space(NAUGHT) == 200){
+                    
+                    return [this.x_cord + x_direction, this.y_cord];
+            }
+            else {
+                this.last_x = this.x_cord;
+                this.last_y = this.y_cord;
+                return this.go_discover(reactive_board);
+            }
+        }
     }
 
     find_way(wanted_texture, reactive_board){
         let DIRT = 1;
-        let posible_roads = Array();
-        /* initiating the loop */
+        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; WATER = 4;
+        let posible_roads = [[[this.x_cord], [this.y_cord]]];
+        let found = 0;
+        
+        let last_length = posible_roads.length;
+        while(true){
+            for(let k = 0; k < last_length; k++){
+                for(let i = -1; i <= 1; i++){
+                    for(let j = -1; j <= 1; j++){
+                        let last_cordinate = posible_roads[0].length-1;
+                        let last_x = posible_roads[0][0][last_cordinate];
+                        let last_y = posible_roads[0][1][last_cordinate];
+                        let new_path = posible_roads[0].slice();
+
+                        if(last_x + i >= 0 && last_y + j >= 0 && last_x + i < this.map_height && last_y + j < this.map_width &&
+                            reactive_board[last_x + i][last_y + j].basic == DIRT && reactive_board[last_x + i][last_y + j].free_animal_space(NAUGHT) == 200
+                            && !((last_x + i) in posible_roads[0][0] && (last_y + j) in posible_roads[0][1])){
+                                new_path[0].push(last_x + i);
+                                new_path[1].push(last_y + j);
+                                posible_roads.push(new_path);
+
+                                switch(wanted_texture){
+                                    case RABBIT:
+                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200){
+                                            found = 1;
+                                        }
+                                        break;
+                                    case FOX:
+                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200){
+                                            found = 1;
+                                        }
+                                        break;
+                                    case PLANT:
+                                        if(reactive_board[last_x + i][last_y + j].plant == 1){
+                                            found = 1;
+                                        }
+                                        break;
+                                    case WATER:
+                                        if(next_to_water(last_x + i, last_y + j, reactive_board) == 200){
+                                            found = 1;
+                                        }
+                                    default:
+                                        console.log("This should not happen, something wanted something that doesn't have a texture which is not defined.")
+                                }
+
+                                if(found == 1){
+                                    return posible_roads[posible_roads.length - 1];
+                                }
+                        }
+                    }
+                }
+            }
+            posible_roads.shift();
+            last_length = posible_roads.length;
+        }
+        return 400;
+    }
+
+    next_to_water(x_cord, y_cord, reactive_board){
+        WATER = 0;
         for(let i = -1; i <= 1; i++){
             for(let j = -1; j <= 1; j++){
-                if(reactive_board[this.x_cord + i][this.y_cord + j].basic == DIRT && reactive_board[this.x_cord + i][this.y_cord + j].free_animal_space() == 200){
-                    posible_roads.push([this.x_cord, this.y_cord, this.x_cord + i, this.y_cord + j]);
+                if(reactive_board[x_cord + i][y_cord + j].basic == WATER && !(i == 0 && j == 0)){
+                    return 200;
                 }
             }
         }
+        return 400;
+    }
 
-        while(true){
-            console.log("hello");
+    move_actual_position(new_x, new_y, reactive_board){
+        let save_object;
+        let old_tile = reactive_board[this.x_cord][this.y_cord];
+        switch(this.id){
+            case old_tile.animal_1.id:
+                save_object = old_tile.animal_1;
+                old_tile.animal_1 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                break;
+            case old_tile.animal_2.id: 
+                save_object = old_tile.animal_2;
+                old_tile.animal_2 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                break;
+            case old_tile.animal_3.id:
+                save_object = old_tile.animal_3;
+                old_tile.animal_3 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                break;
+            default:
+                /* Should not happen */
+                console.log("WARNING: Someone tried to move a object from a tile, which it is not currently on.")
         }
+
+        this.last_x = this.x_cord;
+        this.last_y = this.y_cord;
+        this.x_cord = new_x;
+        this.y_cord = new_y;
+
+        reactive_board[new_x][new_y].insert_obejct(save_object);
     }
 }
 
@@ -209,6 +395,11 @@ class tile {
             }
         }
 
+        return this.insert_obejct(object);        
+    }
+
+    insert_obejct(object){
+        let RABBIT = 1; let FOX = 2; let NAUGHT = 0; let PLANT = 3;
         if(this.animal_1.texture == NAUGHT){
             this.animal_1 = object;
         }
@@ -223,19 +414,18 @@ class tile {
         return 200;
     }
 
-    free_animal_space(){
-        if(this.animal_1.texture == NAUGHT){
+    free_animal_space(texture){
+        if(this.animal_1.texture == texture){
             return 200;
         }
-        else if(this.animal_2.texture == NAUGHT){
+        else if(this.animal_2.texture == texture){
             return 200;
         }
-        else if(this.animal_3.texture == NAUGHT){
+        else if(this.animal_3.texture == texture){
             return 200;
         } else {
             return 400;
         }
-        return 200;
     }
 }
 
@@ -246,6 +436,7 @@ function main(){
 
 let reactive_board;
 function simulator_start() {
+    let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3;
     ID = 1;
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
     [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,1,0,0,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1]]
@@ -303,18 +494,30 @@ function simulator_start() {
         }
     }
 
-    create_object_random(1, 4, map_height, map_width, reactive_board);
-    create_object_random(3, 10, map_height, map_width, reactive_board);
+    let rabbits = Array(); let plants = Array();
 
-    one_step_simulation(reactive_board, map_height, map_width);
+    rabbits = create_object_random(RABBIT, 4, map_height, map_width, reactive_board);
+    plants = create_object_random(PLANT, 10, map_height, map_width, reactive_board);
+
+    console.log("I'm starting the simulation");
+    setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0);
 }
 
-function one_step_simulation(reactive_board, map_height, map_width){
+function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks){
     /* reactive_animals(reactive_board, map_height, map_width);
     
-    
     */
-   
+    /* this should move all the rabits, one by one. */
+    for(let i = 0; i < rabbits.length; i++){
+        rabbits[i].make_a_move(reactive_board);
+    }
+
+    for(let i = 0; i < foxes.length; i++){
+        foxes[0].make_a_move(reactive_board);
+    }
+
+    setTimeout(one_step_simulation, 1500, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
+    console.log(game_ticks);
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
@@ -340,6 +543,7 @@ function create_object_random(texture, number_of_objects, map_height, map_width,
        readable, so you are welcome!! */
     let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3;
     let object;
+    let objects = Array();
 
     for(let i = 0; i < number_of_objects; i++){
         while(true){
@@ -366,6 +570,8 @@ function create_object_random(texture, number_of_objects, map_height, map_width,
                         console.log("function create_object_random(), was given a texture which it doesn't support");
                 }
 
+                objects.push(object);
+
                 if(reactive_board[x_cord][y_cord].place_object(object) == 200){
                     object.make_visible_character();
                     break;
@@ -373,6 +579,8 @@ function create_object_random(texture, number_of_objects, map_height, map_width,
             }
         }
     }
+
+    return objects;
 }
 
 function check_for_empty(value, default_value){
@@ -573,7 +781,6 @@ function event_listeners(){
     document.getElementById("left_side_bar").addEventListener("click", () => (toggle_left_bar == 0 ? mouse_over() : mouse_away()));
     document.getElementById("settings_logo_box").addEventListener("click", () => open_advanced_settings());
 }
-
 
 
 main();
