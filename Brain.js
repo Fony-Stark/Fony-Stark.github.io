@@ -1,7 +1,7 @@
 let ID = 1;
 
 class Animal {
-    constructor(x_cord, y_cord, map_height, map_width){
+    constructor(x_cord, y_cord, map_height, map_width, ticks = 0){
         /* Sex means wether or not it wants to have the sex. if sex = 0, it doesn't want to have it 
         if sex = 1 it wants the D and if sex >= 2 it is pregnate. It will give birth when it reaches 10. */
         this.sex = 0;
@@ -12,6 +12,9 @@ class Animal {
         this.map_width = map_width;
         this.last_x = x_cord;
         this.last_y = y_cord;
+
+        /* This is the objects internal watch, comparing to wether or not it is time for it move or not. */
+        this.tics = ticks;
         
     }
 
@@ -300,13 +303,37 @@ class Animal {
     avaliable_sex_partner(x_cord, y_cord, reactive_board){
         let WILLING = 1;
         let field = reactive_board[x_cord][y_cord];
-        if(field.animal_1.texture == this.texture && field.animal_1.sex == WILLING){
+        if(field.animal_1.texture == this.texture && field.animal_1.sex == WILLING && field.animal_1.id != this.id){
             return 200;
-        } else if(ield.animal_2.texture == this.texture && field.animal_2.sex == WILLING){
+        } else if(field.animal_2.texture == this.texture && field.animal_2.sex == WILLING && field.animal_2.id != this.id){
             return 200;
-        } else if(ield.animal_3.texture == this.texture && field.animal_3.sex == WILLING){
+        } else if(field.animal_3.texture == this.texture && field.animal_3.sex == WILLING && field.animal_3.id != this.id){
             return 200;
         } else {
+            return 400;
+        }
+    }
+
+    reproduce(reactive_board){
+        let sex_animal; let sex_field = reactive_board[this.x_cord][this.y_cord];
+        if(this.avaliable_sex_partner(this.x_cord, this.y_cord, reactive_board) == 200){
+            this.horny = 0;
+
+            if(sex_field.animal_1.texture == this.texture && sex_field.animal_1.id != this.id){
+                sex_animal = sex_field.animal_1;
+            } else if(sex_field.animal_2.texture == this.texture && sex_field.animal_2.id != this.id){
+                sex_animal = sex_field.animal_2;
+            } else if(sex_field.animal_3.texture == this.texture && sex_field.animal_3.id != this.id){
+                sex_animal = sex_field.animal_3;
+            }
+
+            sex_animal.sex = 2;
+            sex_animal.horny = 0;
+
+            return 200;
+        }
+        else {
+            console.log("This should never have happened, a Rabbit tried to have sex, but there were no avaliable, mates on the same fied.")
             return 400;
         }
     }
@@ -369,14 +396,6 @@ class rabbit extends Animal{
             return 200;
         } else {
             return 400;
-        }
-    }
-
-    reproduce(reactive_board){
-        let RABBIT = 1;
-        if(reactive_board[this.x_cord][this.y_cord].free_animal_space(RABBIT) == 200){
-            this.horny = 0;
-            this.rape();
         }
     }
 }
