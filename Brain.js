@@ -2,12 +2,17 @@ let ID = 1;
 
 class Animal {
     constructor(x_cord, y_cord, map_height, map_width){
+        /* Sex means wether or not it wants to have the sex. if sex = 0, it doesn't want to have it 
+        if sex = 1 it wants the D and if sex >= 2 it is pregnate. It will give birth when it reaches 10. */
+        this.sex = 0;
+
         this.x_cord = x_cord;
         this.y_cord = y_cord;
         this.map_height = map_height;
         this.map_width = map_width;
         this.last_x = x_cord;
         this.last_y = y_cord;
+        
     }
 
     make_visible_character(){
@@ -16,30 +21,33 @@ class Animal {
         let RABBIT = 1; let FOX = 2; let PLANT = 3;
         let style_string = "transition: 0.6s; ";
 
-        let elem = document.createElement("div");
-        style_string += "font-size:" + (String(36/(this.map_height)) + "vh; ");
+        /* let elem = document.createElement("div"); */
+        let elem = document.createElement("img");
+
+        style_string += "width: " + (String(35/(this.map_width)) + "vw; ");
+        style_string += "height: " + (String(32.5/(this.map_height)) + "vh; ");
         style_string += "position:" + "absolute; ";
         style_string += "user-select: none; ";
-        style_string += "top:" + String(66/this.map_height * (this.x_cord+0.25)+1) + "vh; ";
-        style_string += "left:" + String(72/(this.map_width) * (this.y_cord+0.25)+1) + "vw; ";
+        style_string += "top:" + String(67/this.map_height * (this.x_cord + 0.25) + 1) + "vh; ";
+        style_string += "left:" + String(72/(this.map_width) * (this.y_cord + 0.25) + 1) + "vw; ";
         style_string += "margin:" + "0; ";
         style_string += "padding:" + "0; ";
         elem.setAttribute("id", String(this.id));
         elem.setAttribute("style", style_string);
         switch(this.texture){
             case FOX:
-                elem.innerHTML = "🐺";
+                elem.setAttribute("src", "images/wolf.png");
                 break;
             case RABBIT:
-                elem.innerHTML = "🐰";
+                elem.setAttribute("src", "images/rabbit.png");
                 break;
             case PLANT:
-                elem.innerHTML = "🍀";
+                elem.setAttribute("src", "images/clover.png");
                 break
             default:
-                /* Do nothing, this should not happen */
+                /*  Do nothing, this should not happen */
                 console.log("This should not happen: WRONG TEXTURE FOR ELEMENT", this);
-        }
+        } 
         document.getElementById("simulation").appendChild(elem);
     }
 
@@ -65,8 +73,8 @@ class Animal {
     }
 
     move_emoji(){
-        document.getElementById(String(this.id)).style.top =  String(66/this.map_height * (this.x_cord+0.25)+1) + "vh";
-        document.getElementById(String(this.id)).style.left = String(72/(this.map_width) * (this.y_cord+0.25)+1) + "vw";
+        document.getElementById(String(this.id)).style.top =  String(67/this.map_height * (this.x_cord + 0.25) + 1) + "vh ";
+        document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 0.25) + 1) + "vw";
     }
 
     my_priorities(){
@@ -84,6 +92,7 @@ class Animal {
         if(this.horny > largest){
             largest = this.hunger;
             code_to_return = 3;
+            this.sex = 1;
         }
 
         return code_to_return;
@@ -130,19 +139,19 @@ class Animal {
         return 200;
     }
 
-    go_discover(reactive_board){
+    go_discover(reactive_board, iterations = 0){
         let DIRT = 1; let NAUGHT = 0;
         let x_direction = this.x_cord - this.last_x;
         let y_direction = this.y_cord - this.last_y;
 
-        if(x_direction + this.x_cord < 0 || x_direction + this.x_cord >= this.map_height){
+        if((x_direction + this.x_cord < this.sight - 1 && x_direction < 0) || (x_direction + this.x_cord > (this.map_height - this.sight) && x_direction > 0)){
             x_direction = 0;
         }
-        if(y_direction + this.y_cord < 0 || y_direction + this.y_cord >= this.map_width){
+        if((y_direction + this.y_cord < this.sight - 1 && y_direction < 0) || (y_direction + this.y_cord > (this.map_width - this.sight) && y_direction > 0)){
             y_direction = 0;
         }
 
-        if(x_direction == 0 && y_direction == 0){
+        if((x_direction == 0 && y_direction == 0) || iterations == 1){
             while(true){
                 if(Math.random() >= 0.5){
                     x_direction = (Math.random() >= 0.25) ? 1  : 0;
@@ -181,9 +190,7 @@ class Animal {
                     return [this.x_cord + x_direction, this.y_cord];
             }
             else {
-                this.last_x = this.x_cord;
-                this.last_y = this.y_cord;
-                return this.go_discover(reactive_board);
+                return this.go_discover(reactive_board, iterations + 1);
             }
         }
     }
@@ -213,17 +220,17 @@ class Animal {
 
                                 switch(wanted_texture){
                                     case RABBIT:
-                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200){
+                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200 && (this.texture == RABBIT) ? (this.avaliable_sex_partner(x_cord, y_cord, reactive_board)  == 200) : true){
                                             found = 1;
                                         }
                                         break;
                                     case FOX:
-                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200){
+                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200 && (this.texture == FOX) ? (this.avaliable_sex_partner(x_cord, y_cord, reactive_board)  == 200) : true){
                                             found = 1;
                                         }
                                         break;
                                     case PLANT:
-                                        if(reactive_board[last_x + i][last_y + j].plant == 1){
+                                        if(reactive_board[last_x + i][last_y + j].plant.texture == 1){
                                             found = 1;
                                         }
                                         break;
@@ -288,6 +295,21 @@ class Animal {
 
         reactive_board[new_x][new_y].insert_obejct(save_object);
     }
+
+    
+    avaliable_sex_partner(x_cord, y_cord, reactive_board){
+        let WILLING = 1;
+        let field = reactive_board[x_cord][y_cord];
+        if(field.animal_1.texture == this.texture && field.animal_1.sex == WILLING){
+            return 200;
+        } else if(ield.animal_2.texture == this.texture && field.animal_2.sex == WILLING){
+            return 200;
+        } else if(ield.animal_3.texture == this.texture && field.animal_3.sex == WILLING){
+            return 200;
+        } else {
+            return 400;
+        }
+    }
 }
 
 function normerisk(number){
@@ -311,10 +333,11 @@ class rabbit extends Animal{
     constructor(x_cord, y_cord, map_height, map_width, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
-        this.id = ID;
-        this.hunger = 0;
-        this.thirst = 0;
-        this.horny  = 0;
+        this.id      = ID;
+        this.hunger  = 0;
+        this.thirst  = 0;
+        this.horny   = 0;
+        this.sight   = 3;
         this.min_thirst = thirst_basic;
         this.min_hunger = hunger_basic;
         this.min_horny  = horny_basic;
@@ -325,7 +348,36 @@ class rabbit extends Animal{
     age(){
         this.hunger++;
         this.thirst++;
-        this.horny++;
+        if(this.sex <= 1){
+            this.horny++;
+        }
+    }
+
+    eat(reactive_board){
+        if(reactive_board[this.x][this.y].plant.texture == 1){
+            reactive_board[this.x][this.y].plant = new naught(this.x, this.y, this.map_height, this.map_width);
+            this.hunger = 0;
+            return 200;
+        } else {
+            return 400;
+        }
+    }
+
+    drink(reactive_board){
+        if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
+            this.thirst = 0;
+            return 200;
+        } else {
+            return 400;
+        }
+    }
+
+    reproduce(reactive_board){
+        let RABBIT = 1;
+        if(reactive_board[this.x_cord][this.y_cord].free_animal_space(RABBIT) == 200){
+            this.horny = 0;
+            this.rape();
+        }
     }
 }
 
@@ -348,7 +400,7 @@ class plant extends Animal{
             for(let j = -1; j < 2; j++){
                 if(!(i == 0 && j == 0 ) && (i + this.x_cord >= 0 && i + this.x_cord < this.map_height) && 
                 (j + this.y_cord >= 0 && j + this.y_cord < this.map_width) && reactive_board[this.x_cord + i][this.y_cord+j].basic == DIRT
-                && reactive_board[this.x_cord + i][this.y_cord+j].plant == 0){
+                && reactive_board[this.x_cord + i][this.y_cord+j].plant.texture == 0){
                     reactive_board[this.x_cord + i][this.y_cord+j].plant = new plant(this.x_cord + i, this.y_cord+j, this.map_height, this.map_width);
                     reactive_board[this.x_cord + i][this.y_cord+j].plant.make_visible_character();
                     return 200;
@@ -364,21 +416,16 @@ class fox extends Animal{
     constructor(x_cord, y_cord, map_height, map_width){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 2;
+        this.sight = 3;
         this.id = ID;
         ID++;
-    }
-
-    my_priorities(){
-        ;
-        ;
-        ;
     }
 }
 
 class tile {
-    constructor(basic_value, plant_or_not, A1, A2, A3){
+    constructor(basic_value, plant, A1, A2, A3){
         this.basic = basic_value;
-        this.plant = plant_or_not;
+        this.plant = plant;
         this.animal_1 = A1;
         this.animal_2 = A2;
         this.animal_3 = A3;
@@ -387,8 +434,8 @@ class tile {
     place_object(object){
         let RABBIT = 1; let FOX = 2; let NAUGHT = 0; let PLANT = 3;
         if(object.texture == PLANT){
-            if(this.plant == 0){
-                this.plant = 1;
+            if(this.plant.texture == 0){
+                this.plant = object;
                 return 200;
             } else {
                 return 400;
@@ -531,7 +578,7 @@ function create_reactive_board(map_height, map_width, basic_board){
     /* I start refering to the tile, class made at the top of this script. */
     for(let i = 0; i < map_height; i++){
         for(let j = 0; j < map_width; j++){
-            reactive_board[i][j] = new tile(basic_board[i][j], 0, new naught(i, j), new naught(i, j), new naught(i, j))
+            reactive_board[i][j] = new tile(basic_board[i][j], new naught(i, j), new naught(i, j), new naught(i, j), new naught(i, j))
         }
     }
 
