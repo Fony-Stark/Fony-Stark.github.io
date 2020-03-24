@@ -12,10 +12,11 @@ class Animal {
         this.map_width = map_width;
         this.last_x = x_cord;
         this.last_y = y_cord;
+        this.id = ID;
 
         /* This is the objects internal watch, comparing to wether or not it is time for it move or not. */
         this.tics = ticks;
-        
+        ID++;
     }
 
     make_visible_character(){
@@ -106,14 +107,42 @@ class Animal {
         let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; let WATER = 4;
         let higest_priority = this.my_priorities();
         let need; let road;
+        let current_tile = reactive_board[this.x_cord][this.y_cord];
         switch(higest_priority){
             case HUNGRY:
-                need = (this.texture == RABBIt) ? PLANT : RABBIT;
+                need = (this.texture == RABBIT) ? PLANT : RABBIT;
+
+                if(current_tile.plant.texture == 3 && need == PLANT){
+                    this.eat(reactive_board);
+                    return 200;
+                } else if(current_tile.free_animal_space(RABBIT) && need == RABBIT){
+                    this.eat(reactive_board);
+                    return 200;
+                }
+
                 break;
             case THIRSTY:
+                if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
+                    this.drink(reactive_board);
+                    return 200;
+                }
+
                 need = WATER;
                 break;
             case HORNY:
+                if(current_tile.animal_1.sex == 1 && current_tile.animal_1.texture == this.texture && current_tile.animal_1.id != this.id){
+                    this.reproduce(reactive_board);
+                    return 200;
+                } 
+                else if(current_tile.animal_2.sex == 1 && current_tile.animal_2.texture == this.texture && current_tile.animal_2.id != this.id){
+                    this.reproduce(reactive_board);
+                    return 200;
+                } 
+                else if(current_tile.animal_3.sex == 1 && current_tile.animal_3.texture == this.texture && current_tile.animal_3.id != this.id){
+                    this.reproduce(reactive_board);
+                    return 200;
+                }
+
                 need = (this.texture == RABBIT) ? RABBIT : FOX;
                 break;
             case DISCOVER:
@@ -200,9 +229,10 @@ class Animal {
 
     find_way(wanted_texture, reactive_board){
         let DIRT = 1;
-        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; WATER = 4;
+        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; let WATER = 4;
         let posible_roads = [[[this.x_cord], [this.y_cord]]];
         let found = 0;
+        let iterations = 0;
         
         let last_length = posible_roads.length;
         while(true){
@@ -233,7 +263,7 @@ class Animal {
                                         }
                                         break;
                                     case PLANT:
-                                        if(reactive_board[last_x + i][last_y + j].plant.texture == 1){
+                                        if(reactive_board[last_x + i][last_y + j].plant.texture == PLANT){
                                             found = 1;
                                         }
                                         break;
@@ -254,15 +284,23 @@ class Animal {
             }
             posible_roads.shift();
             last_length = posible_roads.length;
+            iterations += 1;
+            if(iterations >= 100){
+                break;
+            }
         }
         return 400;
     }
 
     next_to_water(x_cord, y_cord, reactive_board){
-        WATER = 0;
+        let WATER = 0;
+        let new_x = 0;
+        let new_y = 0;
         for(let i = -1; i <= 1; i++){
             for(let j = -1; j <= 1; j++){
-                if(reactive_board[x_cord + i][y_cord + j].basic == WATER && !(i == 0 && j == 0)){
+                new_x = x_cord + i;
+                new_y = y_cord + j;
+                if(new_x >= 0 && new_x < this.map_height && new_y >= 0 && new_y < this.map_width && reactive_board[new_x][new_y].basic == WATER && !(i == 0 && j == 0)){
                     return 200;
                 }
             }
@@ -315,9 +353,10 @@ class Animal {
     }
 
     reproduce(reactive_board){
-        let sex_animal; let sex_field = reactive_board[this.x_cord][this.y_cord];
+        let sex_animal; 
+        let sex_field = reactive_board[this.x_cord][this.y_cord];
         if(this.avaliable_sex_partner(this.x_cord, this.y_cord, reactive_board) == 200){
-            this.horny = 0;
+            console.log("I just had sex!!!!", this.id, "by the way.")
 
             if(sex_field.animal_1.texture == this.texture && sex_field.animal_1.id != this.id){
                 sex_animal = sex_field.animal_1;
@@ -329,6 +368,8 @@ class Animal {
 
             sex_animal.sex = 2;
             sex_animal.horny = 0;
+            this.horny = 0;
+            this.sex = 0;
 
             return 200;
         }
@@ -360,7 +401,6 @@ class rabbit extends Animal{
     constructor(x_cord, y_cord, map_height, map_width, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 1;
-        this.id      = ID;
         this.hunger  = 0;
         this.thirst  = 0;
         this.horny   = 0;
@@ -369,7 +409,6 @@ class rabbit extends Animal{
         this.min_hunger = hunger_basic;
         this.min_horny  = horny_basic;
         this.discover   = discover_basic;
-        ID++;
     }
 
     age(){
@@ -377,12 +416,17 @@ class rabbit extends Animal{
         this.thirst++;
         if(this.sex <= 1){
             this.horny++;
+        } else if(this.sex > 1){
+            this.sex++;
         }
     }
 
     eat(reactive_board){
-        if(reactive_board[this.x][this.y].plant.texture == 1){
-            reactive_board[this.x][this.y].plant = new naught(this.x, this.y, this.map_height, this.map_width);
+        let plant_to_eat = reactive_board[this.x_cord][this.y_cord].plant;
+        console.log("Hey, I'm ", this.id, " and I just ate");
+        if(plant_to_eat.texture == 3){
+            document.getElementById(String(plant_to_eat.id)).remove();
+            reactive_board[this.x_cord][this.y_cord].plant = new naught(this.x, this.y, this.map_height, this.map_width);
             this.hunger = 0;
             return 200;
         } else {
@@ -391,6 +435,7 @@ class rabbit extends Animal{
     }
 
     drink(reactive_board){
+        console.log("Hey, I'm ", this.id, " and I just drank");
         if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
             this.thirst = 0;
             return 200;
@@ -436,8 +481,6 @@ class fox extends Animal{
         super(x_cord, y_cord, map_height, map_width);
         this.texture = 2;
         this.sight = 3;
-        this.id = ID;
-        ID++;
     }
 }
 
@@ -576,6 +619,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     /* this should move all the rabits, one by one. */
     for(let i = 0; i < rabbits.length; i++){
         rabbits[i].make_a_move(reactive_board);
+        rabbits[i].age();
     }
 
     for(let i = 0; i < foxes.length; i++){
