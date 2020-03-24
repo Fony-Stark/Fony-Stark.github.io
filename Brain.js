@@ -627,7 +627,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     }
 
     setTimeout(one_step_simulation, 1500, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
-    console.log(game_ticks);
+    console.log("Game ticks:", game_ticks);
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
