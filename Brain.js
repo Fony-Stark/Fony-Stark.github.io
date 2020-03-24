@@ -108,6 +108,26 @@ class Animal {
         let higest_priority = this.my_priorities();
         let need; let road;
         let current_tile = reactive_board[this.x_cord][this.y_cord];
+        if(this.sex >= 10){
+            this.sex = 0;
+            if(current_tile.animal_1.texture == NAUGHT){
+                current_tile.animal_1 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                current_tile.animal_1.make_visible_character();
+                console.log("I made a baby");
+            }
+            if(current_tile.animal_2.texture == NAUGHT){
+                current_tile.animal_2 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                current_tile.animal_1.make_visible_character();
+                console.log("I made a baby");
+            }
+            if(current_tile.animal_3.texture == NAUGHT){
+                current_tile.animal_3 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+                current_tile.animal_1.make_visible_character();
+                console.log("I made a baby");
+            }
+            console.log("I gave birth");
+            return 200;
+        }
         switch(higest_priority){
             case HUNGRY:
                 need = (this.texture == RABBIT) ? PLANT : RABBIT;
