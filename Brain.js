@@ -108,31 +108,11 @@ class Animal {
         let higest_priority = this.my_priorities();
         let need; let road;
         let current_tile = reactive_board[this.x_cord][this.y_cord];
-        if(this.sex >= 10){
-            this.sex = 0;
-            if(current_tile.animal_1.texture == NAUGHT){
-                current_tile.animal_1 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
-                current_tile.animal_1.make_visible_character();
-                console.log("I made a baby");
-            }
-            if(current_tile.animal_2.texture == NAUGHT){
-                current_tile.animal_2 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
-                current_tile.animal_1.make_visible_character();
-                console.log("I made a baby");
-            }
-            if(current_tile.animal_3.texture == NAUGHT){
-                current_tile.animal_3 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
-                current_tile.animal_1.make_visible_character();
-                console.log("I made a baby");
-            }
-            console.log("I gave birth");
-            return 200;
-        }
         switch(higest_priority){
             case HUNGRY:
                 need = (this.texture == RABBIT) ? PLANT : RABBIT;
 
-                if(current_tile.plant.texture == 3 && need == PLANT){
+                if(current_tile.plant.texture == PLANT && need == PLANT){
                     this.eat(reactive_board);
                     return 200;
                 } else if(current_tile.free_animal_space(RABBIT) && need == RABBIT){
@@ -182,8 +162,8 @@ class Animal {
             this.move_emoji();
 
         } else {
-            let new_x = road[0][-1];
-            let new_y = road[1][-1];
+            let new_x = road[0][1];
+            let new_y = road[1][1];
             this.move_actual_position(new_x, new_y, reactive_board);
             this.move_emoji();
         }
@@ -253,62 +233,60 @@ class Animal {
         let posible_roads = [[[this.x_cord], [this.y_cord]]];
         let found = 0;
         let iterations = 0;
-        
-        let last_length = posible_roads.length;
+
         while(true){
-            for(let k = 0; k < last_length; k++){
-                for(let i = -1; i <= 1; i++){
-                    for(let j = -1; j <= 1; j++){
-                        let last_cordinate = posible_roads[0].length-1;
-                        let last_x = posible_roads[0][0][last_cordinate];
-                        let last_y = posible_roads[0][1][last_cordinate];
-                        let new_path = posible_roads[0].slice();
+            for(let i = -1; i <= 1; i++){
+                for(let j = -1; j <= 1; j++){
+                    let last_cordinate = posible_roads[0][0].length-1;
+                    let last_x = posible_roads[0][0][last_cordinate];
+                    let last_y = posible_roads[0][1][last_cordinate];
+                    let new_path = posible_roads[0].slice();
 
-                        if(last_x + i >= 0 && last_y + j >= 0 && last_x + i < this.map_height && last_y + j < this.map_width &&
-                            reactive_board[last_x + i][last_y + j].basic == DIRT && reactive_board[last_x + i][last_y + j].free_animal_space(NAUGHT) == 200
-                            && !((last_x + i) in posible_roads[0][0] && (last_y + j) in posible_roads[0][1])){
-                                new_path[0].push(last_x + i);
-                                new_path[1].push(last_y + j);
-                                posible_roads.push(new_path);
+                    if(last_x + i >= 0 && last_y + j >= 0 && last_x + i < this.map_height && last_y + j < this.map_width &&
+                        reactive_board[last_x + i][last_y + j].basic == DIRT && reactive_board[last_x + i][last_y + j].free_animal_space(NAUGHT) == 200){
+                            new_path[0].push(last_x + i);
+                            new_path[1].push(last_y + j);
+                            posible_roads.push(new_path);
 
-                                switch(wanted_texture){
-                                    case RABBIT:
-                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200 && (this.texture == RABBIT) ? (this.avaliable_sex_partner(x_cord, y_cord, reactive_board)  == 200) : true){
-                                            found = 1;
-                                        }
-                                        break;
-                                    case FOX:
-                                        if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200 && (this.texture == FOX) ? (this.avaliable_sex_partner(x_cord, y_cord, reactive_board)  == 200) : true){
-                                            found = 1;
-                                        }
-                                        break;
-                                    case PLANT:
-                                        if(reactive_board[last_x + i][last_y + j].plant.texture == PLANT){
-                                            found = 1;
-                                        }
-                                        break;
-                                    case WATER:
-                                        if(next_to_water(last_x + i, last_y + j, reactive_board) == 200){
-                                            found = 1;
-                                        }
-                                    default:
-                                        console.log("This should not happen, something wanted something that doesn't have a texture which is not defined.")
-                                }
+                            switch(wanted_texture){
+                                case RABBIT:
+                                    if((this.texture == RABBIT) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : (reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200)){
+                                        found = 1;
+                                    }
+                                    break;
+                                case FOX:
+                                    if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200 && (this.texture == FOX) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : true){
+                                        found = 1;
+                                    }
+                                    break;
+                                case PLANT:
+                                    if(reactive_board[last_x + i][last_y + j].plant.texture == PLANT){
+                                        found = 1;
+                                    }
+                                    break;
+                                case WATER:
+                                    if(this.next_to_water(last_x + i, last_y + j, reactive_board) == 200){
+                                        found = 1;
+                                    }
+                                    break;
+                                default:
+                                    console.log("This should not happen, something wanted something that doesn't have a texture which is not defined.")
+                            }
 
-                                if(found == 1){
-                                    return posible_roads[posible_roads.length - 1];
-                                }
-                        }
+                            if(found == 1){
+                                console.log("I actually found a way to", wanted_texture);
+                                return new_path;
+                            }
                     }
                 }
             }
             posible_roads.shift();
-            last_length = posible_roads.length;
             iterations += 1;
-            if(iterations >= 100){
+            if(iterations >= 1000){
                 break;
             }
         }
+        console.log("I failed to find a way to ", wanted_texture);
         return 400;
     }
 
@@ -398,6 +376,16 @@ class Animal {
             return 400;
         }
     }
+
+    drink(reactive_board){
+        console.log("Hey, I'm ", this.id, " and I just drank");
+        if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
+            this.thirst = 0;
+            return 200;
+        } else {
+            return 400;
+        }
+    }
 }
 
 function normerisk(number){
@@ -454,14 +442,32 @@ class rabbit extends Animal{
         }
     }
 
-    drink(reactive_board){
-        console.log("Hey, I'm ", this.id, " and I just drank");
-        if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
-            this.thirst = 0;
-            return 200;
-        } else {
-            return 400;
+    give_birth(reactive_board){
+        let current_tile = reactive_board[this.x_cord][this.y_cord];
+        let NAUGHT = 0;
+        let small_rabbits = [];
+
+        this.sex = 0;
+        if(current_tile.animal_1.texture == NAUGHT){
+            reactive_board[this.x_cord][this.y_cord].animal_1 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            current_tile.animal_1.make_visible_character();
+            small_rabbits.push(current_tile.animal_1);
+            console.log("I made a baby");
         }
+        if(current_tile.animal_2.texture == NAUGHT){
+            reactive_board[this.x_cord][this.y_cord].animal_2 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            current_tile.animal_2.make_visible_character();
+            small_rabbits.push(current_tile.animal_2);
+            console.log("I made a baby");
+        }
+        if(current_tile.animal_3.texture == NAUGHT){
+            reactive_board[this.x_cord][this.y_cord].animal_3 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            current_tile.animal_3.make_visible_character();
+            small_rabbits.push(current_tile.animal_3);
+            console.log("I made a baby");
+        }
+        console.log("I gave birth");
+        return small_rabbits;
     }
 }
 
@@ -625,7 +631,7 @@ function simulator_start() {
 
     let rabbits = Array(); let plants = Array();
 
-    rabbits = create_object_random(RABBIT, 4, map_height, map_width, reactive_board);
+    rabbits = create_object_random(RABBIT, 1, map_height, map_width, reactive_board);
     plants = create_object_random(PLANT, 10, map_height, map_width, reactive_board);
 
     console.log("I'm starting the simulation");
@@ -638,7 +644,14 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     */
     /* this should move all the rabits, one by one. */
     for(let i = 0; i < rabbits.length; i++){
-        rabbits[i].make_a_move(reactive_board);
+        if(rabbits[i].sex >= 10){
+            let new_rabbits = rabbits[i].give_birth(reactive_board);
+            for(let j = 0; j < new_rabbits.length; j++){
+                rabbits.push(new_rabbits[j]);
+            }
+        } else {
+            rabbits[i].make_a_move(reactive_board);
+        }
         rabbits[i].age();
     }
 
@@ -646,7 +659,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         foxes[0].make_a_move(reactive_board);
     }
 
-    setTimeout(one_step_simulation, 1500, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
+    setTimeout(one_step_simulation, 1000, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
     console.log("Game ticks:", game_ticks);
 }
 
