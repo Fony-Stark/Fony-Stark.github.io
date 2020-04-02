@@ -22,7 +22,7 @@ class Animal {
     make_visible_character(){
         /* console.log("Hello, I'm creating an animal " + this.y_cord + " is the y_cord")
         console.log("Hello, I'm creating an animal " + this.x_cord + " is the x_cord") */
-        let RABBIT = 1; let FOX = 2; let PLANT = 3;
+        let RABBIT = 1; let FOX = 2; let PLANT = 3; let DEVIL = 666;
         let style_string = "transition: 0.6s; ";
 
         /* let elem = document.createElement("div"); */
@@ -48,6 +48,9 @@ class Animal {
             case PLANT:
                 elem.setAttribute("src", "images/clover.png");
                 break
+            case DEVIL:
+                elem.setAttribute("src", "red_square.JPG");
+                break;
             default:
                 /*  Do nothing, this should not happen */
                 console.log("This should not happen: WRONG TEXTURE FOR ELEMENT", this);
@@ -233,60 +236,95 @@ class Animal {
         let posible_roads = [[[this.x_cord], [this.y_cord]]];
         let found = 0;
         let iterations = 0;
+        let dublicate = 0;
+        let new_path;
 
         while(true){
-            for(let i = -1; i <= 1; i++){
-                for(let j = -1; j <= 1; j++){
-                    let last_cordinate = posible_roads[0][0].length-1;
-                    let last_x = posible_roads[0][0][last_cordinate];
-                    let last_y = posible_roads[0][1][last_cordinate];
-                    let new_path = posible_roads[0].slice();
+            if(posible_roads.length == 0){
+                return 400;
+            }
 
-                    if(last_x + i >= 0 && last_y + j >= 0 && last_x + i < this.map_height && last_y + j < this.map_width &&
+            let new_path_2 = give_me_a_copy(posible_roads[0]);
+            let last_cordinate = new_path_2[0].length - 1;
+            let last_x = new_path_2[0][last_cordinate];
+            let last_y = new_path_2[1][last_cordinate];
+            let i_and_j = [[0,1],[1,0],[0,-1],[-1,0], [1,1],[1,-1],[-1,1],[-1,-1]];
+            let i, j;
+
+            for(let k = 0; k < i_and_j.length; k++){
+                i = i_and_j[k][0];
+                j = i_and_j[k][1];
+
+                new_path = [];
+                new_path = give_me_a_copy(new_path_2);
+
+                dublicate = 0;
+                for(let k = 0; k < new_path[0].length; k++){
+                    if(new_path[0][k] == (last_x + i) && new_path[1][k] == (last_y + j)){
+                        dublicate = 1;
+                    }
+                }
+
+                if(dublicate == 0 && last_x + i >= 0 && last_y + j >= 0 && last_x + i < this.map_height && last_y + j < this.map_width &&
                         reactive_board[last_x + i][last_y + j].basic == DIRT && reactive_board[last_x + i][last_y + j].free_animal_space(NAUGHT) == 200){
-                            new_path[0].push(last_x + i);
-                            new_path[1].push(last_y + j);
-                            posible_roads.push(new_path);
+                    new_path[0].push(last_x + i);
+                    new_path[1].push(last_y + j);
+                    posible_roads.push(new_path);
+                    // console.log("This is last_x + i:", last_x + i, "And this is last_y + j:", last_y + j);
+                    // console.log("This is new:", new_path);
+                    // console.log("This is posible:", posible_roads);
 
-                            switch(wanted_texture){
-                                case RABBIT:
-                                    if((this.texture == RABBIT) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : (reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200)){
-                                        found = 1;
-                                    }
-                                    break;
-                                case FOX:
-                                    if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200 && (this.texture == FOX) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : true){
-                                        found = 1;
-                                    }
-                                    break;
-                                case PLANT:
-                                    if(reactive_board[last_x + i][last_y + j].plant.texture == PLANT){
-                                        found = 1;
-                                    }
-                                    break;
-                                case WATER:
-                                    if(this.next_to_water(last_x + i, last_y + j, reactive_board) == 200){
-                                        found = 1;
-                                    }
-                                    break;
-                                default:
-                                    console.log("This should not happen, something wanted something that doesn't have a texture which is not defined.")
+                    switch(wanted_texture){
+                        case RABBIT:
+                            if((this.texture == RABBIT) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : (reactive_board[last_x + i][last_y + j].free_animal_space(RABBIT) == 200)){
+                                found = 1;
                             }
+                            break;
+                        case FOX:
+                            if(reactive_board[last_x + i][last_y + j].free_animal_space(FOX) == 200 && (this.texture == FOX) ? (this.avaliable_sex_partner(last_x + i, last_y + j, reactive_board)  == 200) : true){
+                                found = 1;
+                            }
+                            break;
+                        case PLANT:
+                            if(reactive_board[last_x + i][last_y + j].plant.texture == PLANT){
+                                found = 1;
+                            }
+                            break;
+                        case WATER:
+                            if(this.next_to_water(last_x + i, last_y + j, reactive_board) == 200){
+                                found = 1;
+                            }
+                            break;
+                        default:
+                            console.log("This should not happen, something wanted something that doesn't have a texture which is not defined.");
+                            console.log("ID of object:", this.id, "  texture of object:", this.texture);
+                    }
 
-                            if(found == 1){
-                                console.log("I actually found a way to", wanted_texture);
-                                return new_path;
-                            }
+                    if(found == 1){
+                        console.log("I actually found a way to", wanted_texture);
+                        /*
+                        console.log(new_path);
+                        console.log(posible_roads);
+                        for(let s = 0; s < new_path[0].length; s++){
+                            let me_die_x = new_path[0][s];
+                            let me_die_y = new_path[1][s];
+                            let me_die = reactive_board[me_die_x][me_die_y];
+                            me_die.animal_1 = new REDALERT(me_die_x, me_die_y, this.map_height, this.map_width);
+                            me_die.animal_1.make_visible_character();
+                        }
+                        return 3;
+                        */
+                        return new_path;
                     }
                 }
             }
-            posible_roads.shift();
+            posible_roads = remove_first_element(posible_roads);
             iterations += 1;
-            if(iterations >= 1000){
+            if(iterations >= 100){
                 break;
             }
         }
-        console.log("I failed to find a way to ", wanted_texture);
+        // console.log("I failed to find a way to ", wanted_texture);
         return 400;
     }
 
@@ -298,7 +336,7 @@ class Animal {
             for(let j = -1; j <= 1; j++){
                 new_x = x_cord + i;
                 new_y = y_cord + j;
-                if(new_x >= 0 && new_x < this.map_height && new_y >= 0 && new_y < this.map_width && reactive_board[new_x][new_y].basic == WATER && !(i == 0 && j == 0)){
+                if(new_x >= 0 && new_x < this.map_height && new_y >= 0 && new_y < this.map_width && reactive_board[new_x][new_y].basic == WATER){
                     return 200;
                 }
             }
@@ -403,6 +441,18 @@ class naught extends Animal{
         this.texture = 0;
         this.id = 0;
     }
+
+    check_for_spread(reactive_board){
+        return [400];
+    }
+}
+
+class REDALERT extends Animal{
+    constructor(x_cord, y_cord, map_height, map_width){
+        super(x_cord, y_cord, map_height, map_width)
+        this.texture = 666;
+        this.id = 0;
+    }
 }
 
 class rabbit extends Animal{
@@ -477,11 +527,30 @@ class plant extends Animal{
         this.texture = 3;
     }
 
-    check_for_spread(board_array, reactive_board){
-        let water_val = water_value(this.map_width, this.map_height, this.x_cord, this.y_cord, board_array);
-        if(Math.random()*100 > 85 - (water_val*0.1)){
-            this.spread(reactive_board);
+    check_for_spread(reactive_board){
+        if(reactive_board[this.x_cord][this.y_cord].plant.texture == 0){
+            return [400];
         }
+        let WATER = 0;
+        let water_val = 0;
+        let x; let y;
+        for(let i = -1; i < 1; i++){
+            for(let j = -1; j < 1; j++){
+                x = this.x_cord + i; y = this.y_cord + j;
+                if(x >= 0 && x < this.map_height && y >= 0 && y < this.map_width && reactive_board[x][y].basic == WATER){
+                    water_val += 2.5;
+                }
+            }
+        }
+
+        let new_plant;
+        if(Math.random()*100 > 99 - (water_val)){
+            new_plant = this.spread(reactive_board);
+        }
+        if(new_plant === undefined){
+            new_plant = 400;
+        }
+        return [200, new_plant];
     }
 
     spread(reactive_board){
@@ -491,9 +560,10 @@ class plant extends Animal{
                 if(!(i == 0 && j == 0 ) && (i + this.x_cord >= 0 && i + this.x_cord < this.map_height) && 
                 (j + this.y_cord >= 0 && j + this.y_cord < this.map_width) && reactive_board[this.x_cord + i][this.y_cord+j].basic == DIRT
                 && reactive_board[this.x_cord + i][this.y_cord+j].plant.texture == 0){
-                    reactive_board[this.x_cord + i][this.y_cord+j].plant = new plant(this.x_cord + i, this.y_cord+j, this.map_height, this.map_width);
+                    let new_plant = new plant(this.x_cord + i, this.y_cord+j, this.map_height, this.map_width);
+                    reactive_board[this.x_cord + i][this.y_cord+j].plant = new_plant;
                     reactive_board[this.x_cord + i][this.y_cord+j].plant.make_visible_character();
-                    return 200;
+                    return new_plant;
                 }
             }
         }
@@ -534,7 +604,7 @@ class tile {
     }
 
     insert_obejct(object){
-        let RABBIT = 1; let FOX = 2; let NAUGHT = 0; let PLANT = 3;
+        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3;
         if(this.animal_1.texture == NAUGHT){
             this.animal_1 = object;
         }
@@ -631,8 +701,8 @@ function simulator_start() {
 
     let rabbits = Array(); let plants = Array();
 
-    rabbits = create_object_random(RABBIT, 1, map_height, map_width, reactive_board);
-    plants = create_object_random(PLANT, 10, map_height, map_width, reactive_board);
+    rabbits = create_object_random(RABBIT, 3, map_height, map_width, reactive_board);
+    plants = create_object_random(PLANT, 15, map_height, map_width, reactive_board);
 
     console.log("I'm starting the simulation");
     setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0);
@@ -643,6 +713,8 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     
     */
     /* this should move all the rabits, one by one. */
+    let PLANT = 3;
+
     for(let i = 0; i < rabbits.length; i++){
         if(rabbits[i].sex >= 10){
             let new_rabbits = rabbits[i].give_birth(reactive_board);
@@ -657,6 +729,36 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
 
     for(let i = 0; i < foxes.length; i++){
         foxes[0].make_a_move(reactive_board);
+    }
+
+    let temp_plant;
+    let new_plants = [];
+    let made_max = [];
+    for(let i = 0; i < plants.length; i++){
+        temp_plant = plants[i].check_for_spread(reactive_board);
+        if(temp_plant[0] == 400){
+            made_max.push(i);
+        } else if(temp_plant[0] == 200 && temp_plant[1].constructor === plant){
+            new_plants.push(temp_plant[1]);
+        } else {
+            //console.log("Wanted to spread, but didn't have any avaliable tiles.");
+        }
+    }
+
+    if(plants.length < map_height){
+        plants.push(create_object_random(PLANT,1,map_height,map_width,reactive_board)[0]);
+    }
+
+    if(made_max.length > 0){
+        for(let i = made_max.length - 1; i >= 0; i--){
+            plants.splice(made_max[i], 1);
+        }
+    }
+
+    if(new_plants.length > 0){
+        for(let i = 0; i < new_plants.length; i++){
+            plants.push(new_plants[i]);
+        }
     }
 
     setTimeout(one_step_simulation, 1000, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
@@ -871,6 +973,30 @@ function is_tile_water(x, y, board){
     } else {
         return false;
     }
+}
+
+function remove_first_element(listen){
+    let return_list = [];
+    for(let i = 1; i < listen.length; i++){
+        return_list.push(listen[i]);
+    }
+    return return_list;
+}
+
+function give_me_a_copy(listen){
+    let return_list = [];
+    if(listen[0].constructor === Array){
+        return_list = [[], []];
+        for(let i = 0; i < listen[0].length; i++){
+            return_list[0].push(listen[0][i]);
+            return_list[1].push(listen[1][i]);
+        }
+    } else {
+        for(let i = 0; i < listen.length; i++){
+            return_list.push(listen[i]);
+        }
+    }
+    return return_list;
 }
 
 function valid_tile(x, y, board_size_height, board_size_width){
