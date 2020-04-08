@@ -13,6 +13,7 @@ class Animal {
         this.last_x = x_cord;
         this.last_y = y_cord;
         this.id = ID;
+        this.birth = ticks;
 
         /* This is the objects internal watch, comparing to wether or not it is time for it move or not. */
         this.tics = ticks;
@@ -96,7 +97,7 @@ class Animal {
             largest = this.thirst;
             code_to_return = 2;
         }
-        if(this.horny > largest){
+        if(this.horny > largest && this.hunger < 30 && this.thirst < 30){
             largest = this.hunger;
             code_to_return = 3;
             this.sex = 1;
@@ -320,7 +321,7 @@ class Animal {
             }
             posible_roads = remove_first_element(posible_roads);
             iterations += 1;
-            if(iterations >= 100){
+            if(iterations >= 50){
                 break;
             }
         }
@@ -469,7 +470,34 @@ class rabbit extends Animal{
         this.discover   = discover_basic;
     }
 
-    age(){
+    die(reactive_board){
+        let tile = reactive_board[this.x_cord][this.y_cord];
+        document.getElementById(String(this.id)).remove();
+        if(tile.animal_1.id == this.id){
+            tile.animal_1 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+        } else if(tile.animal_2.id == this.id){
+            tile.animal_2 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+        } else if(tile.animal_3.id == this.id){
+            tile.animal_3 = new naught(this.x_cord, this.y_cord, this.map_height, this.map_width);
+        } else {
+            console.log("I tried to kill an annimal, which is not me.");
+        }
+        console.log("I just died!");
+    }
+
+    dieQuestionmark(reactive_board){
+        if(this.hunger > 40 || this.thirst > 40){
+            this.die(reactive_board);
+            return 400;
+        } else {
+            return 200;
+        }
+    }
+
+    age(reactive_board){
+        if(this.dieQuestionmark(reactive_board) == 400){
+            return 400;
+        }
         this.hunger++;
         this.thirst++;
         if(this.sex <= 1){
@@ -477,6 +505,7 @@ class rabbit extends Animal{
         } else if(this.sex > 1){
             this.sex++;
         }
+        return 200
     }
 
     eat(reactive_board){
@@ -715,6 +744,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     /* this should move all the rabits, one by one. */
     let PLANT = 3;
 
+    let mad_max = [];
     for(let i = 0; i < rabbits.length; i++){
         if(rabbits[i].sex >= 10){
             let new_rabbits = rabbits[i].give_birth(reactive_board);
@@ -724,7 +754,15 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         } else {
             rabbits[i].make_a_move(reactive_board);
         }
-        rabbits[i].age();
+        if(rabbits[i].age(reactive_board) == 400){
+            mad_max.push(i);
+        }
+    }
+
+    if(mad_max.length > 0){
+        for(let i = mad_max.length - 1; i >= 0; i--){
+            rabbits.splice(mad_max[i], 1);
+        }
     }
 
     for(let i = 0; i < foxes.length; i++){
