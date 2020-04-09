@@ -16,7 +16,7 @@ class Animal {
         this.birth = ticks;
 
         /* This is the objects internal watch, comparing to wether or not it is time for it move or not. */
-        this.tics = ticks;
+        this.ticks = ticks;
         ID++;
     }
 
@@ -170,6 +170,12 @@ class Animal {
             let new_y = road[1][1];
             this.move_actual_position(new_x, new_y, reactive_board);
             this.move_emoji();
+        }
+
+        if(this.last_x - this.x_cord != 0 && this.last_y - this.y_cord != 0){
+            this.ticks += 8;
+        } else {
+            this.ticks += 5.65
         }
 
         return 200;
@@ -457,8 +463,8 @@ class REDALERT extends Animal{
 }
 
 class rabbit extends Animal{
-    constructor(x_cord, y_cord, map_height, map_width, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
-        super(x_cord, y_cord, map_height, map_width);
+    constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
+        super(x_cord, y_cord, map_height, map_width, ticks);
         this.texture = 1;
         this.hunger  = 0;
         this.thirst  = 0;
@@ -494,7 +500,7 @@ class rabbit extends Animal{
         }
     }
 
-    age(reactive_board){
+    age(reactive_board, ticks){
         if(this.dieQuestionmark(reactive_board) == 400){
             return 400;
         }
@@ -521,26 +527,26 @@ class rabbit extends Animal{
         }
     }
 
-    give_birth(reactive_board){
+    give_birth(reactive_board, game_ticks){
         let current_tile = reactive_board[this.x_cord][this.y_cord];
         let NAUGHT = 0;
         let small_rabbits = [];
 
         this.sex = 0;
         if(current_tile.animal_1.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_1 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            reactive_board[this.x_cord][this.y_cord].animal_1 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks);
             current_tile.animal_1.make_visible_character();
             small_rabbits.push(current_tile.animal_1);
             console.log("I made a baby");
         }
         if(current_tile.animal_2.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_2 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            reactive_board[this.x_cord][this.y_cord].animal_2 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks);
             current_tile.animal_2.make_visible_character();
             small_rabbits.push(current_tile.animal_2);
             console.log("I made a baby");
         }
         if(current_tile.animal_3.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_3 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width);
+            reactive_board[this.x_cord][this.y_cord].animal_3 = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks);
             current_tile.animal_3.make_visible_character();
             small_rabbits.push(current_tile.animal_3);
             console.log("I made a baby");
@@ -573,7 +579,7 @@ class plant extends Animal{
         }
 
         let new_plant;
-        if(Math.random()*100 > 99 - (water_val)){
+        if(Math.random()*100 > 99 - (water_val)*0.1){
             new_plant = this.spread(reactive_board);
         }
         if(new_plant === undefined){
@@ -602,8 +608,8 @@ class plant extends Animal{
 }
 
 class fox extends Animal{
-    constructor(x_cord, y_cord, map_height, map_width){
-        super(x_cord, y_cord, map_height, map_width);
+    constructor(x_cord, y_cord, map_height, map_width, ticks=0){
+        super(x_cord, y_cord, map_height, map_width, ticks);
         this.texture = 2;
         this.sight = 3;
     }
@@ -746,18 +752,19 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
 
     let mad_max = [];
     for(let i = 0; i < rabbits.length; i++){
-        if(rabbits[i].sex >= 10){
-            let new_rabbits = rabbits[i].give_birth(reactive_board);
-            for(let j = 0; j < new_rabbits.length; j++){
-                rabbits.push(new_rabbits[j]);
+        if(rabbits[i].ticks <= game_ticks){
+            if(rabbits[i].sex >= 10){
+                let new_rabbits = rabbits[i].give_birth(reactive_board, game_ticks);
+                for(let j = 0; j < new_rabbits.length; j++){
+                    rabbits.push(new_rabbits[j]);
+                }
+            } else {
+                rabbits[i].make_a_move(reactive_board);
             }
-        } else {
-            rabbits[i].make_a_move(reactive_board);
-        }
-        if(rabbits[i].age(reactive_board) == 400){
-            mad_max.push(i);
-        }
-    }
+            if(rabbits[i].age(reactive_board) == 400){
+                mad_max.push(i);
+            }
+        }}
 
     if(mad_max.length > 0){
         for(let i = mad_max.length - 1; i >= 0; i--){
@@ -799,7 +806,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    setTimeout(one_step_simulation, 1000, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
+    setTimeout(one_step_simulation, 176, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
     console.log("Game ticks:", game_ticks);
 }
 
