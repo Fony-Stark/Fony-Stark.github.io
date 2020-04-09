@@ -579,7 +579,7 @@ class plant extends Animal{
         }
 
         let new_plant;
-        if(Math.random()*100 > 99 - (water_val)*0.1){
+        if(Math.random()*100 > 99.8 - (water_val)*0.1){
             new_plant = this.spread(reactive_board);
         }
         if(new_plant === undefined){
