@@ -608,7 +608,7 @@ class kit extends rabbit{
     }
 
     grow_up_maybe(){
-        if(this.plants_eaten >= 5){
+        if(this.plants_eaten >= 3){
             this.grow_up();
             return 200;
         }
