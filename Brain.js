@@ -121,13 +121,13 @@ class Animal {
 
     make_a_move(reactive_board){
         let HUNGRY = 1; let THIRSTY = 2; let HORNY = 3; let DISCOVER = 4;
-        let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3; let WATER = 4;
+        let NAUGHT = 0; let RABBIT = 1; let KIT = 1.5; let FOX = 2; let PLANT = 3; let WATER = 4;
         let higest_priority = this.my_priorities();
         let need; let road;
         let current_tile = reactive_board[this.x_cord][this.y_cord];
         switch(higest_priority){
             case HUNGRY:
-                need = (this.texture == RABBIT) ? PLANT : RABBIT;
+                need = (this.texture == RABBIT || this.texture == KIT) ? PLANT : RABBIT;
 
                 if(current_tile.plant.texture == PLANT && need == PLANT){
                     this.eat(reactive_board);
@@ -516,7 +516,7 @@ class rabbit extends Animal{
         }
     }
 
-    age(reactive_board, ticks){
+    age(reactive_board){
         if(this.dieQuestionmark(reactive_board) == 400){
             return 400;
         }
@@ -575,11 +575,18 @@ class rabbit extends Animal{
 class kit extends rabbit{
     constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
         super(x_cord, y_cord, map_height, map_width, ticks, thirst_basic, hunger_basic, horny_basic, discover_basic);
-        this.plants_eaten = 0;
-        this.texture = 1;
+        this.texture = 1.5
+        this.hunger  = 0;
+        this.thirst  = 0;
+        this.horny   = 0;
+        this.sight   = 3;
+        this.min_thirst = thirst_basic;
+        this.min_hunger = hunger_basic;
+        this.min_horny  = horny_basic;
+        this.discover   = discover_basic;
     }
 
-    age(reactive_board, ticks){
+    age(reactive_board){
         if(this.dieQuestionmark(reactive_board) == 400){
             return 400;
         }
@@ -591,34 +598,35 @@ class kit extends rabbit{
     grow_up(reactive_board){
         document.getElementById(String(this.id)).remove();
         let tile = reactive_board[this.x_cord][this.y_cord];
-        let animal_field;
+        let new_rabbit = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width, this.ticks + 4, this.thirst_basic,
+            this.hunger_basic, this.horny_basic, this.discover_basic);
 
         switch(this.id){
             case tile.animal_1.id:
-                animal_field = tile.animal_1;
+                reactive_board[this.x_cord][this.y_cord].animal_1 = new_rabbit;
+                reactive_board[this.x_cord][this.y_cord].animal_1.make_visible_character();    
                 break;
             case tile.animal_2.id:
-                animal_field = tile.animal_2;
+                reactive_board[this.x_cord][this.y_cord].animal_2 = new_rabbit;
+                reactive_board[this.x_cord][this.y_cord].animal_2.make_visible_character();    
                 break;
             case tile.animal_3.id:
-                animal_field = tile.animal_3;
+                reactive_board[this.x_cord][this.y_cord].animal_3 = new_rabbit;
+                reactive_board[this.x_cord][this.y_cord].animal_3.make_visible_character();    
                 break;
             default:
                 console.log("A kit tried to grow up on a tile, which it is not currently on!");
        }
-
-       animal_field = new rabbit(this.x_cord, this.y_cord, this.map_height, this.map_width, this.ticks + 4, this.thirst_basic,
-        this.hunger_basic, this.horny_basic, this.discover_basic);
-
-        animal_field.make_visible_character();
     }
 
-    grow_up_maybe(){
+    grow_up_maybe(reactive_board){
         if(this.plants_eaten >= 3){
-            this.grow_up();
+            this.grow_up(reactive_board);
             return 200;
         }
-        else return 400;
+        else {
+            return 400;
+        }
     }
 
     eat(reactive_board){
@@ -828,18 +836,25 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     
     */
     /* this should move all the rabits, one by one. */
-    let PLANT = 3;
+    let PLANT = 3; KIT = 1.5;
 
     let mad_max = [];
     for(let i = 0; i < rabbits.length; i++){
         if(rabbits[i].ticks <= game_ticks){
             if(rabbits[i].sex >= 10){
+                if(rabbits[i].texture == KIT){
+                    console.log("a kit managed to have a high sex level");
+                    return 400;
+                }
                 let new_rabbits = rabbits[i].give_birth(reactive_board, game_ticks);
                 rabbits[i].ticks += 8;
                 for(let j = 0; j < new_rabbits.length; j++){
                     rabbits.push(new_rabbits[j]);
                 }
             } else {
+                if(rabbits[i].texture == KIT){
+                    rabbits[i].grow_up_maybe(reactive_board);
+                }
                 rabbits[i].make_a_move(reactive_board);
             }
             if(rabbits[i].age(reactive_board) == 400){
