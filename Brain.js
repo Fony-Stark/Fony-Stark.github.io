@@ -508,7 +508,7 @@ class rabbit extends Animal{
     }
 
     dieQuestionmark(reactive_board){
-        if(this.hunger > 60 || this.thirst > 60){
+        if(this.hunger > 60 || this.thirst > 60 || this.ticks - this.birth >= 1000){
             this.die(reactive_board);
             return 400;
         } else {
@@ -576,6 +576,7 @@ class kit extends rabbit{
     constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
         super(x_cord, y_cord, map_height, map_width, ticks, thirst_basic, hunger_basic, horny_basic, discover_basic);
         this.texture = 1.5
+        this.plants_eaten = 0;
         this.hunger  = 0;
         this.thirst  = 0;
         this.horny   = 0;
@@ -612,17 +613,18 @@ class kit extends rabbit{
                 break;
             case tile.animal_3.id:
                 reactive_board[this.x_cord][this.y_cord].animal_3 = new_rabbit;
+                console.log("A kid grew up");
                 reactive_board[this.x_cord][this.y_cord].animal_3.make_visible_character();    
                 break;
             default:
                 console.log("A kit tried to grow up on a tile, which it is not currently on!");
        }
+       return 200;
     }
 
     grow_up_maybe(reactive_board){
         if(this.plants_eaten >= 3){
-            this.grow_up(reactive_board);
-            return 200;
+            return this.grow_up(reactive_board);
         }
         else {
             return 400;
