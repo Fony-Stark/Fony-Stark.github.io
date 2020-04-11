@@ -895,7 +895,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    if(game_ticks % 12 == 0){
+    if(game_ticks % 4 == 0){
         plants.push(create_object_random(PLANT,1,map_height,map_width,reactive_board)[0]);
     }
 
