@@ -508,7 +508,7 @@ class rabbit extends Animal{
     }
 
     dieQuestionmark(reactive_board){
-        if(this.hunger > 35 || this.thirst > 35 || this.ticks - this.birth >= 500){
+        if(this.hunger > 35 || this.thirst > 35 || this.ticks - this.birth >= 1000){
             this.die(reactive_board);
             return 400;
         } else {
@@ -826,8 +826,8 @@ function simulator_start() {
 
     let rabbits = Array(); let plants = Array();
 
-    rabbits = create_object_random(RABBIT, 3, map_height, map_width, reactive_board);
-    plants = create_object_random(PLANT, 15, map_height, map_width, reactive_board);
+    rabbits = create_object_random(RABBIT, map_height/3, map_height, map_width, reactive_board);
+    plants = create_object_random(PLANT, map_height*1.5, map_height, map_width, reactive_board);
 
     console.log("I'm starting the simulation");
     setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0);
@@ -895,7 +895,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    if(plants.length < map_height && game_ticks % 12 == 0){
+    if(game_ticks % 12 == 0){
         plants.push(create_object_random(PLANT,1,map_height,map_width,reactive_board)[0]);
     }
 
