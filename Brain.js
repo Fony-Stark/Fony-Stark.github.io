@@ -99,7 +99,7 @@ class Animal {
         let largest = this.discover;
         let code_to_return = 4;
 
-        if(this.sex == 1 && (this.hunger >= 30 || this.thirst >= 30)){
+        if(this.sex == 1 && (this.hunger >= 25 || this.thirst >= 25)){
             this.sex = 0;
         }
         if(this.hunger > largest){
@@ -110,7 +110,7 @@ class Animal {
             largest = this.thirst;
             code_to_return = 2;
         }
-        if(this.horny > largest && this.hunger < 30 && this.thirst < 30){
+        if(this.horny > largest && this.hunger < 25 && this.thirst < 25){
             largest = this.hunger;
             code_to_return = 3;
             this.sex = 1;
@@ -149,17 +149,17 @@ class Animal {
             case HORNY:
                 if(current_tile.animal_1.sex == 1 && current_tile.animal_1.texture == this.texture && current_tile.animal_1.id != this.id){
                     this.reproduce(reactive_board);
-                    this.ticks += 4;
+                    this.ticks += 8;
                     return 200;
                 } 
                 else if(current_tile.animal_2.sex == 1 && current_tile.animal_2.texture == this.texture && current_tile.animal_2.id != this.id){
                     this.reproduce(reactive_board);
-                    this.ticks += 4;
+                    this.ticks += 8;
                     return 200;
                 } 
                 else if(current_tile.animal_3.sex == 1 && current_tile.animal_3.texture == this.texture && current_tile.animal_3.id != this.id){
                     this.reproduce(reactive_board);
-                    this.ticks += 4;
+                    this.ticks += 8;
                     return 200;
                 }
 
@@ -843,13 +843,16 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     let mad_max = [];
     for(let i = 0; i < rabbits.length; i++){
         if(rabbits[i].ticks <= game_ticks){
+            if(rabbits[i].sex == 2){
+                this.ticks += 8
+            }
             if(rabbits[i].sex >= 10){
                 if(rabbits[i].texture == KIT){
                     console.log("a kit managed to have a high sex level");
                     return 400;
                 }
                 let new_rabbits = rabbits[i].give_birth(reactive_board, game_ticks);
-                rabbits[i].ticks += 8;
+                rabbits[i].ticks += 12;
                 for(let j = 0; j < new_rabbits.length; j++){
                     rabbits.push(new_rabbits[j]);
                 }
@@ -892,7 +895,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    if(plants.length < map_height && game_ticks % 2 == 0){
+    if(plants.length < map_height && game_ticks % 12 == 0){
         plants.push(create_object_random(PLANT,1,map_height,map_width,reactive_board)[0]);
     }
 
