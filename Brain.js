@@ -508,7 +508,7 @@ class rabbit extends Animal{
     }
 
     dieQuestionmark(reactive_board){
-        if(this.hunger > 45 || this.thirst > 45 || this.ticks - this.birth >= 500){
+        if(this.hunger > 35 || this.thirst > 35 || this.ticks - this.birth >= 500){
             this.die(reactive_board);
             return 400;
         } else {
