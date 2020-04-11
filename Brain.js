@@ -508,7 +508,7 @@ class rabbit extends Animal{
     }
 
     dieQuestionmark(reactive_board){
-        if(this.hunger > 60 || this.thirst > 60 || this.ticks - this.birth >= 1000){
+        if(this.hunger > 45 || this.thirst > 45 || this.ticks - this.birth >= 500){
             this.die(reactive_board);
             return 400;
         } else {
@@ -619,7 +619,7 @@ class kit extends rabbit{
             default:
                 console.log("A kit tried to grow up on a tile, which it is not currently on!");
        }
-       return 200;
+       return new_rabbit;
     }
 
     grow_up_maybe(reactive_board){
@@ -854,10 +854,14 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
                     rabbits.push(new_rabbits[j]);
                 }
             } else {
-                if(rabbits[i].texture == KIT){
-                    rabbits[i].grow_up_maybe(reactive_board);
-                }
                 rabbits[i].make_a_move(reactive_board);
+
+                if(rabbits[i].texture == KIT){
+                    let output_grow = rabbits[i].grow_up_maybe(reactive_board);
+                    if(output_grow != 400){
+                        rabbits[i] = output_grow;
+                    }
+                }
             }
             if(rabbits[i].age(reactive_board) == 400){
                 mad_max.push(i);
