@@ -44,7 +44,7 @@ class Animal {
                 elem.setAttribute("src", "images/wolf.png");
                 break;
             case RABBIT:
-                elem.setAttribute("src", "images/rabbit.png");
+                elem.setAttribute("src", "images/rabbit2.png");
                 break;
             case KIT:
                 elem.setAttribute("src", "images/kit.png");
@@ -84,8 +84,14 @@ class Animal {
     }
 
     move_emoji(){
-        document.getElementById(String(this.id)).style.top =  String(67/this.map_height * (this.x_cord + 0.25) + 1) + "vh ";
-        document.getElementById(String(this.id)).style.left = String(72/this.map_width * (this.y_cord + 0.25) + 1) + "vw";
+        let random = Math.random() * 0.2;
+        let sigma_x = 0.15 + random;
+
+        random = Math.random() * 0.2;
+        let sigma_y = 0.15 + random;
+
+        document.getElementById(String(this.id)).style.top  = String(67/this.map_height * (this.x_cord + sigma_x) + 1) + "vh";
+        document.getElementById(String(this.id)).style.left = String(72/this.map_width  * (this.y_cord + sigma_y) + 1) + "vw";
     }
 
     my_priorities(){
@@ -337,7 +343,7 @@ class Animal {
             }
             posible_roads = remove_first_element(posible_roads);
             iterations += 1;
-            if(iterations >= 50){
+            if(iterations >= 10){
                 break;
             }
         }
