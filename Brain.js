@@ -878,7 +878,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
     }
 
     for(let i = 0; i < foxes.length; i++){
-        foxes[0].make_a_move(reactive_board);
+        foxes[i].make_a_move(reactive_board);
     }
 
     let temp_plant;
