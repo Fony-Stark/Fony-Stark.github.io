@@ -763,8 +763,8 @@ function main(){
     /* document.getElementById("simulation").addEventListener("mouseover", () => {console.log("hey")}); */
 }
 
-let reactive_board;
 function simulator_start() {
+    let reactive_board;
     let NAUGHT = 0; let RABBIT = 1; let FOX = 2; let PLANT = 3;
     ID = 1;
     let HappyFace = [[1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1], [1,1,1,0,1,1,0,1,1,1], [1,1,1,0,1,1,0,1,1,1], 
