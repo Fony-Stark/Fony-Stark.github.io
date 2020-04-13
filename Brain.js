@@ -324,7 +324,7 @@ class Animal {
                     }
 
                     if(found == 1){
-                        console.log("I actually found a way to", wanted_texture);
+                        //console.log("I actually found a way to", wanted_texture);
                         /*
                         console.log(new_path);
                         console.log(posible_roads);
@@ -395,7 +395,6 @@ class Animal {
 
         reactive_board[new_x][new_y].insert_obejct(save_object);
     }
-
     
     avaliable_sex_partner(x_cord, y_cord, reactive_board){
         let WILLING = 1;
@@ -415,7 +414,7 @@ class Animal {
         let sex_animal; 
         let sex_field = reactive_board[this.x_cord][this.y_cord];
         if(this.avaliable_sex_partner(this.x_cord, this.y_cord, reactive_board) == 200){
-            console.log("I just had sex!!!!", this.id, "by the way.")
+            //console.log("I just had sex!!!!", this.id, "by the way.")
 
             if(sex_field.animal_1.texture == this.texture && sex_field.animal_1.id != this.id){
                 sex_animal = sex_field.animal_1;
@@ -439,7 +438,7 @@ class Animal {
     }
 
     drink(reactive_board){
-        console.log("Hey, I'm ", this.id, " and I just drank");
+        //console.log("Hey, I'm ", this.id, " and I just drank");
         if(this.next_to_water(this.x_cord, this.y_cord, reactive_board) == 200){
             this.thirst = 0;
             return 200;
@@ -504,7 +503,7 @@ class rabbit extends Animal{
         } else {
             console.log("I tried to kill an annimal, which is not me.");
         }
-        console.log("I just died!");
+        //console.log("I just died!");
     }
 
     dieQuestionmark(reactive_board){
@@ -532,7 +531,7 @@ class rabbit extends Animal{
 
     eat(reactive_board){
         let plant_to_eat = reactive_board[this.x_cord][this.y_cord].plant;
-        console.log("Hey, I'm ", this.id, " and I just ate");
+        // console.log("Hey, I'm ", this.id, " and I just ate");
         if(plant_to_eat.texture == 3){
             document.getElementById(String(plant_to_eat.id)).remove();
             reactive_board[this.x_cord][this.y_cord].plant = new naught(this.x, this.y, this.map_height, this.map_width);
@@ -553,21 +552,21 @@ class rabbit extends Animal{
             reactive_board[this.x_cord][this.y_cord].animal_1 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
             current_tile.animal_1.make_visible_character();
             small_rabbits.push(current_tile.animal_1);
-            console.log("I made a baby");
+            // console.log("I made a baby");
         }
         if(current_tile.animal_2.texture == NAUGHT){
             reactive_board[this.x_cord][this.y_cord].animal_2 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
             current_tile.animal_2.make_visible_character();
             small_rabbits.push(current_tile.animal_2);
-            console.log("I made a baby");
+            // console.log("I made a baby");
         }
         if(current_tile.animal_3.texture == NAUGHT){
             reactive_board[this.x_cord][this.y_cord].animal_3 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
             current_tile.animal_3.make_visible_character();
             small_rabbits.push(current_tile.animal_3);
-            console.log("I made a baby");
+            // console.log("I made a baby");
         }
-        console.log("I gave birth");
+        // console.log("I gave birth");
         return small_rabbits;
     }
 }
@@ -633,7 +632,7 @@ class kit extends rabbit{
 
     eat(reactive_board){
         let plant_to_eat = reactive_board[this.x_cord][this.y_cord].plant;
-        console.log("Hey, I'm ", this.id, " and I just ate");
+        // console.log("Hey, I'm ", this.id, " and I just ate");
         if(plant_to_eat.texture == 3){
             document.getElementById(String(plant_to_eat.id)).remove();
             reactive_board[this.x_cord][this.y_cord].plant = new naught(this.x, this.y, this.map_height, this.map_width);
@@ -829,11 +828,14 @@ function simulator_start() {
     rabbits = create_object_random(RABBIT, map_height/3, map_height, map_width, reactive_board);
     plants = create_object_random(PLANT, map_height*1.5, map_height, map_width, reactive_board);
 
+    let time = new Date;
+    time = time.getTime();
+
     console.log("I'm starting the simulation");
-    setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0);
+    setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0, time);
 }
 
-function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks){
+function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks, starting_time){
     /* reactive_animals(reactive_board, map_height, map_width);
     
     */
@@ -877,6 +879,9 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
+    update_sidebar_statistics(rabbits.length);
+    update_timer(starting_time, game_ticks);
+
     for(let i = 0; i < foxes.length; i++){
         foxes[i].make_a_move(reactive_board);
     }
@@ -911,8 +916,8 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    setTimeout(one_step_simulation, 176, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1);
-    console.log("Game ticks:", game_ticks);
+    setTimeout(one_step_simulation, 176, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1, starting_time);
+    // console.log("Game ticks:", game_ticks);
 }
 
 function create_reactive_board(map_height, map_width, basic_board){
@@ -1147,6 +1152,24 @@ function give_me_a_copy(listen){
         }
     }
     return return_list;
+}
+
+function update_sidebar_statistics(rabbits){
+    document.getElementById("stats1").innerHTML = "Current number of rabbits = " + rabbits.toString();
+}
+
+function update_timer(starting_time, game_ticks = 0){
+    let k = new Date()
+    let mili_seconds = k.getTime() - starting_time;
+    let seconds = Math.floor(mili_seconds * 10**-3);
+
+    let game_time_in_seconds = Math.floor(seconds % 60);
+    let game_time_in_minutes = Math.floor((seconds / 60) % (60));
+    let game_time_in_hours   = Math.floor((seconds / (60 * 60)) % 24);
+    
+    let running_clock = game_time_in_hours.toString() + ":" + game_time_in_minutes.toString() + ":" + game_time_in_seconds.toString();
+
+    document.getElementById("stats13").innerHTML = "The simulation has been running for (h:m:s):\n" + running_clock + " (" + game_ticks.toString() + " ticks)";
 }
 
 function valid_tile(x, y, board_size_height, board_size_width){
