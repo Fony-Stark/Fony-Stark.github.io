@@ -1166,8 +1166,12 @@ function update_timer(starting_time, game_ticks = 0){
     let game_time_in_seconds = Math.floor(seconds % 60);
     let game_time_in_minutes = Math.floor((seconds / 60) % (60));
     let game_time_in_hours   = Math.floor((seconds / (60 * 60)) % 24);
+
+    let seconds_beauty = ("0" + game_time_in_seconds.toString()).slice(-2);
+    let minutes_beauty = ("0" + game_time_in_minutes.toString()).slice(-2);
+    let hours_beauty = ("0" + game_time_in_hours.toString()).slice(-2);
     
-    let running_clock = game_time_in_hours.toString() + ":" + game_time_in_minutes.toString() + ":" + game_time_in_seconds.toString();
+    let running_clock = hours_beauty + ":" + minutes_beauty + ":" + seconds_beauty;
 
     document.getElementById("stats13").innerHTML = "The simulation has been running for (h:m:s):\n" + running_clock + " (" + game_ticks.toString() + " ticks)";
 }
