@@ -612,7 +612,6 @@ class kit extends rabbit{
                 break;
             case tile.animal_3.id:
                 reactive_board[this.x_cord][this.y_cord].animal_3 = new_rabbit;
-                console.log("A kid grew up");
                 reactive_board[this.x_cord][this.y_cord].animal_3.make_visible_character();    
                 break;
             default:
@@ -818,7 +817,6 @@ function simulator_start() {
             if(reactive_board[i][j].animal_1.texture == 1){
                 reactive_board[i][j].animal_1.look_around(3, reactive_board);
                 reactive_board[i][j].animal_1.make_visible_character();
-
             }
         }
     }
@@ -835,11 +833,10 @@ function simulator_start() {
     setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0, time);
 }
 
-function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks, starting_time){
+function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks, starting_time, time_each_tick=176){
     /* reactive_animals(reactive_board, map_height, map_width);
-    
-    */
-    /* this should move all the rabits, one by one. */
+     *
+     * this should move all the rabits, one by one. */
     let PLANT = 3; KIT = 1.5;
 
     let mad_max = [];
@@ -861,7 +858,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
             } else {
                 rabbits[i].make_a_move(reactive_board);
 
-                if(rabbits[i].texture == KIT){
+                if(rabbits[i].texture == KIT){ 
                     let output_grow = rabbits[i].grow_up_maybe(reactive_board);
                     if(output_grow != 400){
                         rabbits[i] = output_grow;
@@ -871,7 +868,8 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
             if(rabbits[i].age(reactive_board) == 400){
                 mad_max.push(i);
             }
-        }}
+        }
+    }
 
     if(mad_max.length > 0){
         for(let i = mad_max.length - 1; i >= 0; i--){
@@ -916,7 +914,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    setTimeout(one_step_simulation, 176, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1, starting_time);
+    setTimeout(one_step_simulation, time_each_tick, reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks + 1, starting_time, time_each_tick);
     // console.log("Game ticks:", game_ticks);
 }
 
@@ -1173,7 +1171,7 @@ function update_timer(starting_time, game_ticks = 0){
     
     let running_clock = hours_beauty + ":" + minutes_beauty + ":" + seconds_beauty;
 
-    document.getElementById("stats13").innerHTML = "The simulation has been running for (h:m:s):\n" + running_clock + " (" + game_ticks.toString() + " ticks)";
+    document.getElementById("stats12").innerHTML = "The simulation has been running for (h:m:s):\n" + running_clock + " (" + game_ticks.toString() + " ticks)";
 }
 
 function valid_tile(x, y, board_size_height, board_size_width){
