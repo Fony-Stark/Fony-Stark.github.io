@@ -236,6 +236,14 @@ body {
     padding: 0;
 }
 
+#chartContainer{
+    height: 20vh;
+    width: auto;
+    border: solid;
+    margin-right: 1vw;
+    margin-top: 1vh;
+}
+
 #reklame{
     border: hidden;
     height: 18vh;
@@ -244,6 +252,7 @@ body {
     padding-right: 2vw;
     margin: 0;
 }
+
 #stats {
     border-top: hidden;
     border-left: hidden;
