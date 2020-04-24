@@ -31,7 +31,7 @@ function create_new_gift(x_cord, y_cord, ID_code){
     style_string += "padding:" + "0; ";
     elem.setAttribute("id", String(ID_code));
     elem.setAttribute("style", style_string);
-    elem.setAttribute("src", "images/Bunde.jpg");
+    elem.setAttribute("src", "images/Bunde.JPG");
     document.getElementById("board").appendChild(elem);
 }
 
