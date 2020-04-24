@@ -1,0 +1,99 @@
+#current_html {
+    position: absolute;
+    background-color: #cdc776;
+    height: 78vh;
+    width:  92.5vw;
+    top: 19vh;
+    left: 5vw;
+    margin: 0;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1.5vw;
+    padding-right: 0.0;
+    object-fit: contain;
+    overflow: hidden;
+}
+
+#header {
+    display: flex;
+    position: absolute;
+    height: 13vh;
+    width: 92.5vw;
+    left: 5vw;
+    top: 2vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1.5vw;
+    padding-right: 0.0;
+    background-color: #BA765C;
+    align-content: center;
+}
+
+#title {
+    display: flex;
+    width: max-content;
+    height: max-content;
+    margin: auto;
+    background: #a9e190;
+    border-radius: 2vh;
+    padding-left: 1.5vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-right: 1.5vw;
+    flex-direction: column;
+}
+
+#homepage_title {
+    margin:0;
+}
+
+#Introduktion_til_Annika {
+    padding-right: 1.5vw;
+    margin-bottom: 5vh;
+}
+
+.discription {
+    font-size: 3vh;
+}
+
+
+.sub_title {
+    display: flex;
+}
+
+.game_portal {
+    width: 30%;
+    height:100%;
+    border: 0.5px solid;
+    float: left;
+    margin-right: 1vw;
+    margin-left: 1vw;
+    padding-left: 0.5vw;
+    background-color: #E7C163;
+}
+
+#hende_den_flotte {
+    transition: 0.6s;
+    position: absolute;
+    left: calc(37.5% + 0*3.35%);
+    top: calc(8% + 0*6.35%);
+    height: 5vh;
+    width: 2vw;
+    margin: 0;
+    padding: 0;
+}
+
+#board {
+    align-content: flex-start;
+    margin:0;
+    padding:0;
+    display: flex;
+    height: 85%;
+    width: 90%;
+    border: 0.5px solid;
+    margin: auto;
+    margin-top: 10%;
+    overflow: hidden;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
