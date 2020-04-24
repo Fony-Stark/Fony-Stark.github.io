@@ -131,8 +131,10 @@ function checkKey(e){
         
         spawn_gift();
     
-        objects[ID - 2].x_cord = objects[ID - 3].last_x;
-        objects[ID - 2].y_cord = objects[ID - 3].last_y;
+        objects[objects.length - 1].x_cord = objects[objects.length - 2].last_x;
+        objects[objects.length - 1].y_cord = objects[objects.length - 2].last_y;
+
+        move_emoji(objects[objects.length - 1].x_cord, objects[objects.length - 1].y_cord, objects[objects.length - 1].id)
     }
 
     for(let i = 0; i < objects.length; i++){
