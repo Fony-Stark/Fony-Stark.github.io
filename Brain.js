@@ -6,7 +6,7 @@ class Animal {
         if sex = 1 it wants the D and if sex >= 2 it is pregnate. It will give birth when it reaches 10. */
         this.sex = 0;
 
-        this.x_cord = x_cord;
+        this.x_cord = x_cord;  
         this.y_cord = y_cord;
         this.map_height = map_height;
         this.map_width = map_width;
@@ -1185,22 +1185,6 @@ function valid_tile(x, y, board_size_height, board_size_width){
 }
 
 function event_listeners(){
-    function mouse_over(){
-        toggle_left_bar = 1;
-        document.getElementById("left_side_bar").style.width = "17vw";
-        document.getElementById("head_side_bar").style.display = "block";
-        document.getElementById("body_side_bar").style.display = "block";
-        document.getElementById("foot_side_bar").style.display = "block";
-    }
-
-    function mouse_away(){
-        toggle_left_bar = 0;
-        document.getElementById("left_side_bar").style.width = "4vw"
-        document.getElementById("head_side_bar").style.display = "none";
-        document.getElementById("body_side_bar").style.display = "none";
-        document.getElementById("foot_side_bar").style.display = "none";
-    }
-
     function open_advanced_settings(){
         if(toggle_settings == 0){
             toggle_settings = 1
@@ -1219,12 +1203,8 @@ function event_listeners(){
         }
     }
 
-    let toggle_left_bar = 0;
     let toggle_settings = 0;
 
-    document.getElementById("left_side_bar").addEventListener("mouseover", () => mouse_over());
-    document.getElementById("left_side_bar").addEventListener("mouseout", () => mouse_away());
-    document.getElementById("left_side_bar").addEventListener("click", () => (toggle_left_bar == 0 ? mouse_over() : mouse_away()));
     document.getElementById("settings_logo_box").addEventListener("click", () => open_advanced_settings());
 }
 
