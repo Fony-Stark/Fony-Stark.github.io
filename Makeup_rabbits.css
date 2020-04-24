@@ -1,14 +1,16 @@
 #current_html {
-    height: 98vh;
-    width:  95vw;
+position: absolute;
+    background-color: #cdc776;
+    height: 97vh;
+    width:  94.7vw;
+    top: 1vh;
+    left: 5vw;
     margin: 0;
-    padding-top: 1vh;
+    padding-top: 0.2vh;
     padding-bottom: 1vh;
-    padding-left: 1.5vw;
+    padding-left: 0;
     padding-right: 0.0;
-    background-color: #f0ffce;
     object-fit: contain;
-    float: right;
     overflow: hidden;
 }
 
