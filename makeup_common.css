@@ -1,0 +1,38 @@
+#left_side_bar {
+    position: absolute;
+    margin:0;
+    height: 97.5vh;
+    width: 4vw;
+    transition: 0.6s;
+    background-color: #7FCDBB;
+    padding-top: 2.5vh;
+}
+
+.side_bar_left {
+    margin-left: 1vw;
+    margin-right: 1vw;
+    display: none;
+    border: solid;
+    border-width: 0.05vw;
+    width: auto;
+    overflow: hidden;
+}
+
+#head_side_bar {
+    height: 20vh;
+}
+
+#body_side_bar {
+    margin-top: 2vh;
+    height: 55vh;
+}
+
+#foot_side_bar {
+    padding-left: 0.5vw;
+    margin-top: 2vh;
+    height: 15vh;
+}
+
+#small_text {
+    font-size: 1.2vh;
+}
