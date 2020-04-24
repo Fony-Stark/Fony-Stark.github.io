@@ -807,6 +807,8 @@ function simulator_start() {
        be enterd in the first place and how many times it should try to place a new water block. */
     let board_array = create_board(map_width, map_height, (map_width*map_height)/(25), (map_height*map_width)/(0.5));
     
+    // board_array = HappyFace; map_height = 9; map_width = 10;
+
     /* Now, the basic board is written into the DOM in the form of images, in the simulation container. */
     print_board_to_doc(board_array, map_height, map_width);
 
