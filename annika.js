@@ -126,14 +126,13 @@ function checkKey(e){
     }
 
     if(x_cordinate == find.x_cord && y_cordinate == find.y_cord){
+        document.getElementById("amount").innerHTML = " Amount: " + (objects.length + 1);
         objects.push(find);
         
         spawn_gift();
     
         objects[ID - 2].x_cord = objects[ID - 3].last_x;
         objects[ID - 2].y_cord = objects[ID - 3].last_y;
-
-        document.getElementById("amount").innerHTML = " Amount: ", objects.length;
     }
 
     for(let i = 0; i < objects.length; i++){
