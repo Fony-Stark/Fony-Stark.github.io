@@ -47,7 +47,7 @@ function GET_method_response(request, response){
 	//console.log("this:", new_url);
 
         let [file_name, file_type] = new_url.split(".");
-        switch(file_type){
+        switch(file_type.toLowerCase()){
             case "html":
                 response.writeHead(200, {"Content-Type": "text/html"});
                 break;
@@ -66,10 +66,15 @@ function GET_method_response(request, response){
                 response.writeHead(200, {"Content-Type": "image/jpg"});
                 response.write(fs.readFileSync(source_url + new_url), "binary");
                 return;
+	    case "jpeg":
+		response.writeHead(200, {"Content-Type": "image/jpeg"});
+		response.write(fs.readFileSync(source_url + new_url), "binary");
+		return;
             default:
                 response.writeHead(404);
                 response.end();
-                console.log("I was asked for a file type, which I isn't programmed for");
+                console.log("I was asked for a file type, which I isn't programmed for:", file_type);
+		return;
         }   
         response.write(fs.readFileSync(source_url + new_url).toString());
         response.end();
