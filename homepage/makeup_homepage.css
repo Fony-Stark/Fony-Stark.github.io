@@ -1,0 +1,56 @@
+#current_html {
+    position: absolute;
+    background-color: #cdc776;
+    height: 78vh;
+    width:  92.5vw;
+    top: 19vh;
+    left: 5vw;
+    margin: 0;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1.5vw;
+    padding-right: 0.0;
+    object-fit: contain;
+    overflow: hidden;
+}
+
+#header {
+    display: flex;
+    position: absolute;
+    height: 13vh;
+    width: 92.5vw;
+    left: 5vw;
+    top: 2vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1.5vw;
+    padding-right: 0.0;
+    background-color: #BA765C;
+    align-content: center;
+}
+
+#title {
+    display: flex;
+    width: max-content;
+    height: max-content;
+    margin: auto;
+    background: #a9e190;
+    border-radius: 2vh;
+    padding-left: 1.5vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-right: 1.5vw;
+}
+
+#homepage_title {
+    margin:0;
+}
+
+#Introduktion_til_Annika {
+    padding-right: 1.5vw;
+    margin-bottom: 5vh;
+}
+
+.discription {
+    font-size: 3vh;
+}
