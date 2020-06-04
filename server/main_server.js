@@ -80,7 +80,7 @@ function GET_method_response(request, response){
         response.end();
     } else {
         response.writeHead(200, {"Contet-Type": "text/html"});
-        response.write(fs.readFileSync(source_url + "index.html").toString());
+        response.write(fs.readFileSync(source_url + "homepage/index.html").toString());
         response.end();
         console.log("I just send the main page");
     }
