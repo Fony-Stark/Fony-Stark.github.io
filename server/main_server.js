@@ -7,7 +7,7 @@ let http = require("http");
 for(let i = 0; i < 25; i++){
     http.createServer((req, res) => {
         server_functions(req, res, 8081 + i);
-    }).listen(8081 + i); 
+    }).listen(8081 + i);
 }
 
 function server_functions(req, res, port_listener){
@@ -33,7 +33,7 @@ function GET_method_response(request, response){
     let modified_url = request.url.split("");
     modified_url.shift();
 
-    let source_url = "/home/pi/webserver/Fony-Stark.github.io/"; 
+    let source_url = "/home/fony/Desktop/github/Fony-Stark.github.io/"; 
 
     //console.log("\nThis is the request I got", request);
     //console.log("\nAnd this is the url:", request.url);
@@ -75,12 +75,12 @@ function GET_method_response(request, response){
                 response.end();
                 console.log("I was asked for a file type, which I isn't programmed for:", file_type);
 		return;
-        }   
+        }
         response.write(fs.readFileSync(source_url + new_url).toString());
         response.end();
     } else {
         response.writeHead(200, {"Contet-Type": "text/html"});
-        response.write(fs.readFileSync(source_url + "homepage/index.html").toString());
+        response.write(fs.readFileSync(source_url + "index.html").toString());
         response.end();
         console.log("I just send the main page");
     }
