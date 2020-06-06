@@ -3,6 +3,11 @@
 let fs = require("fs");
 let https = require("https");
 let http = require("http");
+let nunjucks = require("nunjucks");
+
+nunjucks.configure('/home/fony/Desktop/github/Fony-Stark.github.io/blogs/', {
+  autoescape: true
+});
 
 for(let i = 0; i < 25; i++){
     http.createServer((req, res) => {
@@ -33,7 +38,7 @@ function GET_method_response(request, response){
     let modified_url = request.url.split("");
     modified_url.shift();
 
-    let source_url = "/home/fony/Desktop/github/Fony-Stark.github.io/"; 
+    let source_url = "/home/fony/Desktop/github/Fony-Stark.github.io/";
 
     //console.log("\nThis is the request I got", request);
     //console.log("\nAnd this is the url:", request.url);
@@ -50,6 +55,8 @@ function GET_method_response(request, response){
         switch(file_type.toLowerCase()){
             case "html":
                 response.writeHead(200, {"Content-Type": "text/html"});
+                response.write(nunjucks.render(source_url + new_url));
+                return;
                 break;
             case "css":
                 response.writeHead(200, {"Content-Type": "text/css"});
@@ -80,7 +87,7 @@ function GET_method_response(request, response){
         response.end();
     } else {
         response.writeHead(200, {"Contet-Type": "text/html"});
-        response.write(fs.readFileSync(source_url + "index.html").toString());
+        response.write(fs.readFileSync(source_url + "homepage/index.html").toString());
         response.end();
         console.log("I just send the main page");
     }
