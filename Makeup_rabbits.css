@@ -1,3 +1,7 @@
+.animal_speed{
+    transition: 0.6s;
+}
+
 #current_html {
 position: absolute;
     background-color: #cdc776;
