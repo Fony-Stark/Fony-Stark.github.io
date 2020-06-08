@@ -24,7 +24,7 @@ class Animal {
         /* console.log("Hello, I'm creating an animal " + this.y_cord + " is the y_cord")
         console.log("Hello, I'm creating an animal " + this.x_cord + " is the x_cord") */
         let RABBIT = 1; let KIT = 1.5; let FOX = 2; let PLANT = 3; let DEVIL = 666;
-        let style_string = "transition: 0.6s; ";
+        let style_string = "";
 
         /* let elem = document.createElement("div"); */
         let elem = document.createElement("img");
@@ -37,6 +37,7 @@ class Animal {
         style_string += "left:" + String(72/(this.map_width) * (this.y_cord + 0.25) + 1) + "vw; ";
         style_string += "margin:" + "0; ";
         style_string += "padding:" + "0; ";
+        elem.setAttribute("class", "animal_speed")
         elem.setAttribute("id", String(this.id));
         elem.setAttribute("style", style_string);
         switch(this.texture){
@@ -44,7 +45,11 @@ class Animal {
                 elem.setAttribute("src", "images/wolf.png");
                 break;
             case RABBIT:
-                elem.setAttribute("src", "images/rabbit2.png");
+                if(this.gender == 1){
+                    elem.setAttribute("src", "images/rabbit.png");
+                } else {
+                    elem.setAttribute("src", "images/rabbit2.png");
+                }
                 break;
             case KIT:
                 elem.setAttribute("src", "images/kit.png");
@@ -102,15 +107,15 @@ class Animal {
         if(this.sex == 1 && (this.hunger >= 25 || this.thirst >= 25)){
             this.sex = 0;
         }
-        if(this.hunger > largest){
+        if(this.hunger > largest && this.hunger >= this.min_hunger){
             largest = this.hunger;
             code_to_return = 1;
         }
-        if(this.thirst > largest){
+        if(this.thirst > largest && this.thirst >= this.min_thirst){
             largest = this.thirst;
             code_to_return = 2;
         }
-        if(this.horny > largest && this.hunger < 25 && this.thirst < 25){
+        if(this.horny > largest && this.hunger < 25 && this.thirst < 25 && this.horny >= this.min_horny){
             largest = this.hunger;
             code_to_return = 3;
             this.sex = 1;
@@ -147,17 +152,17 @@ class Animal {
                 need = WATER;
                 break;
             case HORNY:
-                if(current_tile.animal_1.sex == 1 && current_tile.animal_1.texture == this.texture && current_tile.animal_1.id != this.id){
+                if(this.gender != current_tile.animal_1.gender && current_tile.animal_1.sex == 1 && current_tile.animal_1.texture == this.texture && current_tile.animal_1.id != this.id){
                     this.reproduce(reactive_board);
                     this.ticks += 8;
                     return 200;
                 } 
-                else if(current_tile.animal_2.sex == 1 && current_tile.animal_2.texture == this.texture && current_tile.animal_2.id != this.id){
+                else if(this.gender != current_tile.animal_2.gender && current_tile.animal_2.sex == 1 && current_tile.animal_2.texture == this.texture && current_tile.animal_2.id != this.id){
                     this.reproduce(reactive_board);
                     this.ticks += 8;
                     return 200;
                 } 
-                else if(current_tile.animal_3.sex == 1 && current_tile.animal_3.texture == this.texture && current_tile.animal_3.id != this.id){
+                else if(this.gender != current_tile.animal_3.gender && current_tile.animal_3.sex == 1 && current_tile.animal_3.texture == this.texture && current_tile.animal_3.id != this.id){
                     this.reproduce(reactive_board);
                     this.ticks += 8;
                     return 200;
@@ -399,11 +404,11 @@ class Animal {
     avaliable_sex_partner(x_cord, y_cord, reactive_board){
         let WILLING = 1;
         let field = reactive_board[x_cord][y_cord];
-        if(field.animal_1.texture == this.texture && field.animal_1.sex == WILLING && field.animal_1.id != this.id){
+        if(this.gender != field.animal_1.gender && field.animal_1.texture == this.texture && field.animal_1.sex == WILLING && field.animal_1.id != this.id){
             return 200;
-        } else if(field.animal_2.texture == this.texture && field.animal_2.sex == WILLING && field.animal_2.id != this.id){
+        } else if(this.gender != field.animal_2.gender && field.animal_2.texture == this.texture && field.animal_2.sex == WILLING && field.animal_2.id != this.id){
             return 200;
-        } else if(field.animal_3.texture == this.texture && field.animal_3.sex == WILLING && field.animal_3.id != this.id){
+        } else if(this.gender != field.animal_3.gender && field.animal_3.texture == this.texture && field.animal_3.sex == WILLING && field.animal_3.id != this.id){
             return 200;
         } else {
             return 400;
@@ -424,10 +429,18 @@ class Animal {
                 sex_animal = sex_field.animal_3;
             }
 
-            sex_animal.sex = 2;
             sex_animal.horny = 0;
+            sex_animal.ticks += 8;
             this.horny = 0;
-            this.sex = 0;
+            if(this.gender == 1){
+                sex_animal.sex = 2;
+                this.sex = 0;
+                sex_animal.farther = this;
+            } else {
+                this.farther = sex_animal;
+                sex_animal.sex = 0;
+                this.sex = 2;
+            }
 
             return 200;
         }
@@ -477,14 +490,22 @@ class REDALERT extends Animal{
     }
 }
 
+
+function bound_gender(number){
+    return (number >= 0.5) ? 1 : -1;
+}
+
 class rabbit extends Animal{
-    constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
+    constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 2, hunger_basic = 2, horny_basic = 2, discover_basic = 2, gender_const = 0){
         super(x_cord, y_cord, map_height, map_width, ticks);
         this.texture = 1;
         this.hunger  = 0;
         this.thirst  = 0;
         this.horny   = 0;
         this.sight   = 3;
+        this.farther;
+        this.gender_constant = gender_const;
+        this.gender  = bound_gender(Math.random()*2 + this.gender_constant);
         this.min_thirst = thirst_basic;
         this.min_hunger = hunger_basic;
         this.min_horny  = horny_basic;
@@ -549,19 +570,37 @@ class rabbit extends Animal{
 
         this.sex = 0;
         if(current_tile.animal_1.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_1 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
+            reactive_board[this.x_cord][this.y_cord].animal_1 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4,
+                (this.min_thirst + this.farther.min_thirst)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_hunger + this.farther.min_hunger)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_horny + this.farther.min_horny)/2  + random_number_between(-0.2, 0.2), 
+                (this.discover + this.farther.discover)/2  + random_number_between(-0.2, 0.2), 
+                (this.gender_constant + this.farther.gender_constant)/2  + random_number_between(-0.2, 0.2));
+
             current_tile.animal_1.make_visible_character();
             small_rabbits.push(current_tile.animal_1);
             // console.log("I made a baby");
         }
         if(current_tile.animal_2.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_2 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
+            reactive_board[this.x_cord][this.y_cord].animal_2 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4,
+                (this.min_thirst + this.farther.min_thirst)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_hunger + this.farther.min_hunger)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_horny + this.farther.min_horny)/2  + random_number_between(-0.2, 0.2), 
+                (this.discover + this.farther.discover)/2  + random_number_between(-0.2, 0.2), 
+                (this.gender_constant + this.farther.gender_constant)/2  + random_number_between(-0.2, 0.2));
+
             current_tile.animal_2.make_visible_character();
             small_rabbits.push(current_tile.animal_2);
             // console.log("I made a baby");
         }
         if(current_tile.animal_3.texture == NAUGHT){
-            reactive_board[this.x_cord][this.y_cord].animal_3 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4);
+            reactive_board[this.x_cord][this.y_cord].animal_3 = new kit(this.x_cord, this.y_cord, this.map_height, this.map_width, game_ticks + 4,
+                (this.min_thirst + this.farther.min_thirst)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_hunger + this.farther.min_hunger)/2 + random_number_between(-0.2, 0.2), 
+                (this.min_horny + this.farther.min_horny)/2  + random_number_between(-0.2, 0.2), 
+                (this.discover + this.farther.discover)/2  + random_number_between(-0.2, 0.2), 
+                (this.gender_constant + this.farther.gender_constant)/2  + random_number_between(-0.2, 0.2));
+
             current_tile.animal_3.make_visible_character();
             small_rabbits.push(current_tile.animal_3);
             // console.log("I made a baby");
@@ -572,8 +611,8 @@ class rabbit extends Animal{
 }
 
 class kit extends rabbit{
-    constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 10, hunger_basic = 10, horny_basic = 20, discover_basic = 5){
-        super(x_cord, y_cord, map_height, map_width, ticks, thirst_basic, hunger_basic, horny_basic, discover_basic);
+    constructor(x_cord, y_cord, map_height, map_width, ticks=0, thirst_basic = 2, hunger_basic = 2, horny_basic = 2, discover_basic = 2, gender_const = 0){
+        super(x_cord, y_cord, map_height, map_width, ticks, thirst_basic, hunger_basic, horny_basic, discover_basic, gender_const);
         this.texture = 1.5
         this.plants_eaten = 0;
         this.hunger  = 0;
@@ -693,6 +732,13 @@ class plant extends Animal{
 
         return 400;
     }
+}
+
+function random_number_between(lowest, highest){
+    let abs_sum = highest - lowest;
+    let rand_number = Math.random() * abs_sum;
+
+    return rand_number + lowest;
 }
 
 class fox extends Animal{
@@ -835,11 +881,34 @@ function simulator_start() {
     setTimeout(one_step_simulation, 3000, reactive_board, map_height, map_width, rabbits, [], plants, 0, time);
 }
 
+let speed_changed_question_mark = 0;
+function change_transition_speed_innitilation(){
+    speed_changed_question_mark = 1;
+}
+
+function change_transition_speed(rabbits){
+    document.getElementById("game_speed").addEventListener("change", () => change_transition_speed());
+
+    let game_speed = parseInt(document.getElementById("game_speed").value);
+
+    game_speed = 0.6 / game_speed * 100;
+
+    game_speed = (game_speed > 0) ? (game_speed < 0.1) ? 0.1 : game_speed : 100;
+
+    console.log("Some just changed the speed");
+
+    document.getElementsByClassName("animal_speed").style.transition -= 0.5;
+}
+
 function one_step_simulation(reactive_board, map_height, map_width, rabbits, foxes, plants, game_ticks, starting_time, time_each_tick=176){
     /* reactive_animals(reactive_board, map_height, map_width);
      *
      * this should move all the rabits, one by one. */
     let PLANT = 3; KIT = 1.5;
+
+    if(speed_changed_question_mark == 1){
+        
+    }
 
     let mad_max = [];
     for(let i = 0; i < rabbits.length; i++){
@@ -879,7 +948,7 @@ function one_step_simulation(reactive_board, map_height, map_width, rabbits, fox
         }
     }
 
-    update_sidebar_statistics(rabbits.length);
+    update_sidebar_statistics(rabbits);
     update_timer(starting_time, game_ticks);
 
     for(let i = 0; i < foxes.length; i++){
@@ -1155,7 +1224,16 @@ function give_me_a_copy(listen){
 }
 
 function update_sidebar_statistics(rabbits){
-    document.getElementById("stats1").innerHTML = "Current number of rabbits = " + rabbits.toString();
+    let males = 0;
+    let kits = 0;
+    for(let i = 0; i < rabbits.length; i++){
+        if(rabbits[i].texture == 1.5){
+            kits++;
+        } else if (rabbits[i].gender == 1){
+            males++;
+        }
+    }
+    document.getElementById("stats1").innerHTML = "Current number of rabbits         = " + rabbits.length.toString() + " (" + males.toString() + " males & " + kits.toString() + " kits)";
 }
 
 function update_timer(starting_time, game_ticks = 0){
@@ -1202,6 +1280,7 @@ function event_listeners(){
             /* document.getElementById("advanced_hidden").style.display = "none"; */
         }
     }
+    document.getElementById("game_speed").addEventListener("change", () => change_transition_speed_innitilation());
 
     let toggle_settings = 0;
 
