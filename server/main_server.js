@@ -5,7 +5,7 @@ let https = require("https");
 let http = require("http");
 let nunjucks = require("nunjucks");
 
-nunjucks.configure('/home/fony/Desktop/github/Fony-Stark.github.io/blogs/', {
+nunjucks.configure('', {
   autoescape: true
 });
 
@@ -83,7 +83,8 @@ function GET_method_response(request, response){
     let modified_url = request.url.split("");
     modified_url.shift();
 
-    let source_url = "/home/fony/Desktop/github/Fony-Stark.github.io/";
+    let source_url = __dirname;
+    source_url = source_url.substring(0, source_url.length - "server".length);
 
     //console.log("\nThis is the request I got", request);
     //console.log("\nAnd this is the url:", request.url);
@@ -92,6 +93,8 @@ function GET_method_response(request, response){
     for(let i = 0; i < modified_url.length; i++){
         new_url += modified_url[i];
     }
+
+    console.log("This is the url:", source_url + new_url);
     console.log(new_url);
 
     if(new_url != "" && new_url != "/" && fs.existsSync(source_url + new_url)){
