@@ -122,7 +122,8 @@ function GET_method_response(request, response){
               json_object_containing_posts.content.push(data);
             }
           } else {
-            json_object_containing_posts.content.push("!LINK\n" + dir_path);
+            console.log("THis is new_new_url:", new_new_url);
+            json_object_containing_posts.content.push("!LINK\n" + "posts");
 
             let data = fs.readFileSync(dir_path + "/" + file + "/discription.txt", {encoding: "utf8", flag:"r"});
             json_object_containing_posts.discription.push(data);

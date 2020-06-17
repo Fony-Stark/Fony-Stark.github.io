@@ -1,8 +1,8 @@
 function create_paragrah_item(title, content, time_of_post, link=""){
-  console.log("This is title: ", title);
+  //console.log("This is title: ", title);
   content = content.replace(/\n/g, "<br/>");
   title = title.replace(/_/g, " ");
-  console.log(content);
+  //console.log(content);
   let new_blog_post = document.createElement("div");
   let new_blog_title = document.createElement("h3");
   let new_blog_text = document.createElement("p");
@@ -30,17 +30,18 @@ function create_paragrah_item(title, content, time_of_post, link=""){
   if(link!=""){
     new_blog_post.addEventListener("click", function(){
       console.log("Someone clicked the link:", link);
+      clicked_link(title, link+"/");
     });
   }
 
   current_html.appendChild(new_blog_post);
 }
 
-async function give_me_content(){
-  console.log("I");
-  fetch("content").then(async function(response) {
+async function give_me_content(link=""){
+  //onsole.log("I");
+  fetch(link + "content").then(async function(response) {
     let blog_posts = await response.json();
-    console.log("This:", blog_posts);
+    //console.log("This:", blog_posts);
 
     for(let i = 0; i < blog_posts.titles.length; i++){
       let content = blog_posts.content[i];
@@ -62,6 +63,12 @@ async function give_me_content(){
       }
     }
   });
+}
+
+async function clicked_link(title, link){
+  document.getElementById("webpage_title").innerHTML = title;
+  document.getElementById("current_html").innerHTML = "";
+  await give_me_content(link);
 }
 
 async function send_new_blog_post_to_server(title, content, path_for_file, user_password){
