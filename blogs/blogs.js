@@ -30,6 +30,7 @@ function create_paragrah_item(title, content, time_of_post, link=""){
   if(link!=""){
     new_blog_post.addEventListener("click", function(){
       console.log("Someone clicked the link:", link);
+      console.log("Full linked:", link+"/")
       clicked_link(title, link+"/");
     });
   }
