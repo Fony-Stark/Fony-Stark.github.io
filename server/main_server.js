@@ -123,7 +123,13 @@ function GET_method_response(request, response){
             }
           } else {
             console.log("THis is new_new_url:", new_new_url);
-            json_object_containing_posts.content.push("!LINK\n" + "posts");
+            let start_index = new_new_url.search("Fony-Stark.github.io");
+            start_index = (start_index != -1) ? start_index : 0;
+            let link = "";
+            for(let k = start_index + 6; k < new_new_url.length; k++){
+              link += new_new_url[k];
+            }
+            json_object_containing_posts.content.push("!LINK\n" + link);
 
             let data = fs.readFileSync(dir_path + "/" + file + "/discription.txt", {encoding: "utf8", flag:"r"});
             json_object_containing_posts.discription.push(data);
