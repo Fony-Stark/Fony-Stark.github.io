@@ -175,6 +175,15 @@ async function send_new_blog_post_to_server(title, content, path_for_file, user_
     return 200;
 }
 
+function convert_blog_post(event){
+  event.preventDefault();
+
+  let content = document.getElementById("content").innerHTML;
+  let password = document.getElementById("password").innerHTML;
+  let new_title = document.getElementById("new_title").innerHTML;
+
+}
+
 function convert_to_JSON(title, content, path_for_file, user_password){
   let post_file = {title: title, content: content, path_for_file: path_for_file, password: user_password};
 
@@ -204,5 +213,6 @@ function post(){
 }
 
 document.getElementById("toggle_post").addEventListener("click", post)
+document.getElementById("submit_post").addEventListener("click", (event) => convert_blog_post(event));
 
 give_me_content();
