@@ -38,11 +38,103 @@ function create_paragrah_item(title, content, time_of_post, link=""){
   current_html.appendChild(new_blog_post);
 }
 
+function month_to_number(month){
+  let months = {"Jan" : 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12}
+  return months[month];
+}
+
+function compare_time(time1, time2){
+  let list_for_time1 = time1.split(" ");
+  let list_for_time2 = time2.split(" ");
+  console.log("This is time1", list_for_time1, "this is time2", list_for_time2);
+  if(Number(list_for_time1[3]) > Number(list_for_time2[3])){
+    return 0;
+  } else if(month_to_number(list_for_time1[1]) > month_to_number(list_for_time1[1])){
+    return 0;
+  } else if(Number(list_for_time1[2]) > Number(list_for_time2[2])){
+    return 0;
+  } 
+  
+  let new_time1 = list_for_time1[1].split(":");
+  let new_time2 = list_for_time2[1].split(":");
+  if(Number(new_time1[0]) > Number(new_time2[0])){
+    return 0;
+  } else if(Number(new_time1[1]) > Number(new_time2[1])){
+    return 0;
+  } else if(Number(new_time1[2]) > Number(new_time2[2])){
+    return 0;
+  }
+
+  return 1;
+}
+
+function sort_posts(array, newest_or_oldest=true){
+  console.log("This is what I was given:", array);
+
+  let link_boolean, optimist_link;
+  let index = 0;
+
+  let title_swap = "";
+  let content_swap = "";
+  let edit_swap = "";
+
+  for(let i = 0; i < array.content.length; i++){
+    link_boolean = (array.content[i].search("!LINK") != -1) ? 1 : 0;
+
+    title_swap = array.titles[i];
+    content_swap = array.content[i];
+    edit_swap = array.edit[i];
+
+    index = i;
+    for(let j = i + 1; j < array.content.length; j++){
+      optimist_link = (array.content[j].search("!LINK") != -1) ? 1 : 0;
+
+      if(optimist_link == 1 && link_boolean != 1){
+        link_boolean = optimist_link;
+        title_swap = array.titles[j];
+        edit_swap = array.edit[j];
+        content_swap = array.content[j];
+
+        index = j;
+      } else if(optimist_link == link_boolean){
+        let diff_time = compare_time(edit_swap, array.edit[j]);
+        if((diff_time == 1 && newest_or_oldest == true) || (diff_time == 0 && newest_or_oldest == false)){
+          link_boolean = optimist_link;
+          title_swap = array.titles[j];
+          edit_swap = array.edit[j];
+          content_swap = array.content[j];
+
+          index = j;
+        }
+      } 
+    }
+    if(index != i){
+      console.log("I swapped ", i, "with", index);
+    }
+
+    let temp = array.content[i];
+    array.content[i] = array.content[index];
+    array.content[index] = temp;
+
+    temp = array.titles[i];
+    array.titles[i]= array.titles[index];
+    array.titles[index] = temp;
+
+    temp = array.edit[i];
+    array.edit[i] = array.edit[index];
+    array.edit[index] = temp;
+  }
+}
+
 async function give_me_content(link=""){
   //onsole.log("I");
   fetch(link + "content").then(async function(response) {
     let blog_posts = await response.json();
     //console.log("This:", blog_posts);
+
+    console.log("This is unsorted:", blog_posts);
+    sort_posts(blog_posts);
+    console.log("This is sorted:", blog_posts);
 
     for(let i = 0; i < blog_posts.titles.length; i++){
       let content = blog_posts.content[i];
@@ -88,5 +180,29 @@ function convert_to_JSON(title, content, path_for_file, user_password){
 
   return JSON.stringify(post_file);
 }
+
+let toggle_post = 0;
+function post(){
+  let toggle = "", post_stuff = "", event_var = "";
+  if(toggle_post == 0){
+    toggle = "hidden";
+    post_stuff = "visible";
+    event_var = "close";
+  }
+  else {
+    toggle = "visible";
+    post_stuff = "hidden";
+    event_var = "toggle_post";
+  }
+
+  document.getElementById(event_var).addEventListener("click", post);
+
+  document.getElementById("toggle_post").style.visibility = toggle;
+  document.getElementById("create_new_post").style.visibility = post_stuff;
+
+  toggle_post = (toggle_post == 0) ? 1 : 0;
+}
+
+document.getElementById("toggle_post").addEventListener("click", post)
 
 give_me_content();
