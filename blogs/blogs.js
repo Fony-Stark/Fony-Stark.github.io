@@ -46,7 +46,7 @@ function month_to_number(month){
 function compare_time(time1, time2){
   let list_for_time1 = time1.split(" ");
   let list_for_time2 = time2.split(" ");
-  console.log("This is time1", list_for_time1, "this is time2", list_for_time2);
+  //console.log("This is time1", list_for_time1, "this is time2", list_for_time2);
   if(Number(list_for_time1[3]) > Number(list_for_time2[3])){
     return 0;
   } else if(month_to_number(list_for_time1[1]) > month_to_number(list_for_time1[1])){
@@ -69,7 +69,7 @@ function compare_time(time1, time2){
 }
 
 function sort_posts(array, newest_or_oldest=true){
-  console.log("This is what I was given:", array);
+  //console.log("This is what I was given:", array);
 
   let link_boolean, optimist_link;
   let index = 0;
@@ -104,12 +104,16 @@ function sort_posts(array, newest_or_oldest=true){
           edit_swap = array.edit[j];
           content_swap = array.content[j];
 
+          if(optimist_link == 1){
+            
+          }
+
           index = j;
         }
       } 
     }
     if(index != i){
-      console.log("I swapped ", i, "with", index);
+      //console.log("I swapped ", i, "with", index);
     }
 
     let temp = array.content[i];
@@ -127,14 +131,26 @@ function sort_posts(array, newest_or_oldest=true){
 }
 
 async function give_me_content(link=""){
+  last_path = (link == "") ? "./blogs/posts/" : "./blogs/" + link;
+  console.log("This is last_path:", last_path);
   //onsole.log("I");
   fetch(link + "content").then(async function(response) {
     let blog_posts = await response.json();
     //console.log("This:", blog_posts);
 
-    console.log("This is unsorted:", blog_posts);
+    let link_to_description = {};
+    let description_n = 0;
+    for(let i = 0; i < blog_posts.content.length; i++){
+      if(blog_posts.content[i].search("!LINK") != -1){
+        link_to_description[blog_posts.titles[i]] = blog_posts.discription[description_n];
+        description_n++;
+      }
+    }
+
+
+    //console.log("This is unsorted:", blog_posts);
     sort_posts(blog_posts);
-    console.log("This is sorted:", blog_posts);
+    //console.log("This is sorted:", blog_posts);
 
     for(let i = 0; i < blog_posts.titles.length; i++){
       let content = blog_posts.content[i];
@@ -145,14 +161,12 @@ async function give_me_content(link=""){
         create_paragrah_item(title, content, last_edit);
       } else {
         let title = blog_posts.titles[i];
-        let description = blog_posts.discription[0];
-        blog_posts.discription.shift();
         let link = "";
         for(let j = "!LINK\n".length; j < content.length; j++){
           link += content[j];
         }
         link += "/" + title;
-        create_paragrah_item(title, description, last_edit, link);
+        create_paragrah_item(title, link_to_description[title], last_edit, link);
       }
     }
   });
@@ -174,14 +188,33 @@ async function send_new_blog_post_to_server(title, content, path_for_file, user_
     xhr.send(message);
     return 200;
 }
-
+let last_path = "./blogs/";
 function convert_blog_post(event){
   event.preventDefault();
 
-  let content = document.getElementById("content").innerHTML;
-  let password = document.getElementById("password").innerHTML;
-  let new_title = document.getElementById("new_title").innerHTML;
+  let content = document.getElementById("content").value;
+  let password = document.getElementById("password").value;
+  let new_title = document.getElementById("new_title").value;
+  let post = document.getElementById("pick_blog").checked == 0;
 
+  console.log(new_title, content, password, post);
+
+  if(content == "" || password == "" ||new_title == ""){
+    return ;
+  }
+  let title = new_title.replaceAll(" ", "_");
+  title += (post == false) ? "" : ".txt";
+  let path = last_path;
+
+
+
+  console.log("This is what I'll send:")
+  console.log("title:    ", title);
+  console.log("content:  ", content);
+  console.log("path:     ", path);
+  console.log("password: ", password);
+
+  send_new_blog_post_to_server(title, content, path, password)
 }
 
 function convert_to_JSON(title, content, path_for_file, user_password){

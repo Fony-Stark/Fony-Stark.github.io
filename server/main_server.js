@@ -37,8 +37,37 @@ function server_functions(req, res, port_listener){
     });
 }
 
+function check_valid_fields(message){
+  if(password_tjeck(message.password) && name_check(message.title) && message.content != ""){
+    if(message.title.search(".") != -1){
+      console.log("This is the path:", message.path_for_file);
+      return true;
+    } else {
+      let [file_name, file_type] = message.title.split(".");
+      if(file_type == "txt"){
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
+
+function name_check(title){
+  console.log("this is the title:", title);
+  if(title.search(",") != -1 || title.search("'") != -1 || title.search("'") != -1 || title.search('"') != -1 || title == "" || 
+      title == " " || title == "/" || title == "\\"){
+    return false;
+  } else {
+    console.log("name_check correct", title)
+    return true;
+  }
+}
+
 function password_tjeck(password_given){
-  if(password_given == "HeyPleaseDontLetMeDoIt"){
+  console.log("This is what i wnated:", password_given);
+  if(password_given === "HeyPleaseDontLetMeDoIt"){
+    console.log("correct password");
     return true;
   } else {
     return false;
@@ -48,15 +77,27 @@ function password_tjeck(password_given){
 async function POST_method_response(req, res){
   let new_post = await post_value(req, res);
   let message = JSON.parse(new_post);
-  if(password_tjeck(message.password)){
-    let current_time = new Date();
-    current_time = current_time.getMilliseconds() % 1000;
-
-    let file_name = message.path_for_file + message.title + current_time + ".json";
-    fs.writeFile(file_name, message.content, function(err){
-      if(err) console.log(err);
-    });
-    console.log("Succesfult created / edited file:", file_name);
+  if(check_valid_fields(message) == true){
+    if(message.title.search(".") == -1){
+      console.log("I'm alive", message.title.search("."));
+      let file_name = message.path_for_file + message.title;
+      fs.writeFile(file_name, message.content, function(err){
+        if(err) console.log(err);
+      });
+      console.log("Succesfult created / edited file:", file_name);
+    } else {
+      console.log("What!!!");
+      fs.mkdir(message.path_for_file + "/posts/" + message.title, function(err){
+        if(err) console.log(err);
+      });
+      fs.mkdir(message.path_for_file + "posts/" + message.title + "/posts/", function(err){
+        if(err) console.log(err);
+      });
+      fs.writeFile(message.path_for_file +"posts/" + message.title + "/discription.txt", message.content, function(err){
+        if(err) console.log(err);
+      });
+      console.log("I just succedded in making a file");
+    }
   } else {
     console.log("Someone with the wrong password just tried to edit my files");
   }
@@ -92,7 +133,7 @@ function GET_method_response(request, response){
         new_url += modified_url[i];
     }
 
-    console.log("This is the url:", source_url + new_url);
+    //console.log("This is the url:", source_url + new_url);
 
     if(!isFile(source_url + new_url)){
       let json_object_containing_posts = {"titles": [], "content": [], "edit": [], "discription": []};
@@ -112,17 +153,23 @@ function GET_method_response(request, response){
           json_object_containing_posts.titles.push(file);
           let stats = fs.statSync(dir_path + "/" + file);
           let mtime = convert_time_m(stats.mtime);
-          json_object_containing_posts.edit.push(mtime);
+          
+          let emtime = "";
+          for(let s = 0; s < mtime.length - 12 - 9; s++){
+            emtime += mtime[s];
+          }
+          emtime += " (GMT+0200)";
+          json_object_containing_posts.edit.push(emtime);
 
           if(isFile(file)){
             let [file_name, file_type] = file.split(".");
             if(file_type == "txt"){
-              //console.log("this is so stupid:", dir_path + "/" + file)
+              //console.log("this is so stupid:", dir_path + w + file)
               let data = fs.readFileSync(dir_path + "/" + file, {encoding: "utf8", flag:"r"});
               json_object_containing_posts.content.push(data);
             }
           } else {
-            console.log("THis is new_new_url:", new_new_url);
+            //console.log("THis is new_new_url:", new_new_url);
             let start_index = new_new_url.search("Fony-Stark.github.io");
             start_index = (start_index != -1) ? start_index : 0;
             let link = "";
