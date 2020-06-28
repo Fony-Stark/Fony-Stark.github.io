@@ -17,10 +17,11 @@ for(let i = 0; i < 25; i++){
 }
 
 function server_functions(req, res, port_listener){
+    // I haven't started making the socket yet..
     //Here should the server tell the socket that it is busy.
-    fs.writeFile(port_listener.toString() + ".txt", "1", function(err) {
-        if(err) throw err;
-    });
+    //fs.writeFile(port_listener.toString() + ".txt", "1", function(err) {
+    //    if(err) throw err;
+    //});
 
     if(req.method == "GET"){
         GET_method_response(req, res);
@@ -32,9 +33,9 @@ function server_functions(req, res, port_listener){
     }
 
     //here it says, that i can take a new connection.
-    fs.writeFile(port_listener.toString() + ".txt", "0", function(err) {
-        if(err) throw err;
-    });
+    //fs.writeFile(port_listener.toString() + ".txt", "0", function(err) {
+    //    if(err) throw err;
+    //});
 }
 
 function check_valid_fields(message){
@@ -74,22 +75,56 @@ function password_tjeck(password_given){
   }
 }
 
-function let_post_last(string, k){
-  let path = string.split("/");
+function remove_dublicates(dublicate, string){
+  console.log("This is the string:", string);
+  let start_index = string.search(dublicate + "//" + dublicate);
+  console.log("This is the index I found:", start_index);
 
+  let new_string = "";
+  if(start_index != -1){
+    for(let i = 0; i < string.length; i++){
+      if(i < start_index || start_index + dublicate.length - 1 + 1 < i){
+        new_string += string[i];
+      }
+    }
+    return remove_dublicates(dublicate, new_string);
+  } else {
+    start_index = string.search(dublicate + "/" + dublicate);
+    if(start_index != -1){
+      for(let i = 0; i < string.length; i++){
+        if(i < start_index || start_index + dublicate.length - 1 + 1 < i){
+          new_string += string[i];
+        }
+      }
+      return remove_dublicates(dublicate, new_string);
+    }
+    return string;
+  }
+}
+
+function let_post_last(string, k){
+  let path = [];
+  if(string.search("/") != -1){
+    path = string.split("/");
+  } else {
+    path = string.split("\\")
+  }
+
+  let new_string;
   if(path[path.length - 1 - k] != "posts"){
     path.splice(path.length - 1, 0, "posts");
 
-    let new_string = "";
+    new_string = "";
     for(let i = 0; i < path.length - 1; i++){
       new_string += path[i] + "/";
     }
     new_string += path[path.length - 1];
 
-    return new_string;
   } else {
-    return string;
+    new_string = string;
   }
+
+  return remove_dublicates("posts", new_string);
 }
 
 async function POST_method_response(req, res){
@@ -107,14 +142,16 @@ async function POST_method_response(req, res){
       console.log("Succesfult created / edited file:", file_name);
     } else {
       console.log("What!!!");
-      message.title = let_post_last(message.title, 0);
-      fs.mkdir(message.path_for_file + message.title, function(err){
+      let yes_mycg_better = let_post_last(message.path_for_file + message.title, 0);
+      fs.mkdir(yes_mycg_better, function(err){
         if(err) console.log(err);
       });
-      fs.mkdir(message.path_for_file + message.title + "/posts/", function(err){
+      let this_is_better = let_post_last(message.path_for_file + message.title, 0)
+      fs.mkdir(this_is_better + "/posts", function(err){
         if(err) console.log(err);
       });
-      fs.writeFile(message.path_for_file + message.title + "/discription.txt", message.content, function(err){
+      let better_file = let_post_last(message.path_for_file, 0)
+      fs.writeFile(better_file + message.title + "/discription.txt", message.content, function(err){
         if(err) console.log(err);
       });
       console.log("I just succedded in making a file");
