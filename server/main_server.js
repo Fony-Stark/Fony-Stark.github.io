@@ -74,26 +74,47 @@ function password_tjeck(password_given){
   }
 }
 
+function let_post_last(string, k){
+  let path = string.split("/");
+
+  if(path[path.length - 1 - k] != "posts"){
+    path.splice(path.length - 1, 0, "posts");
+
+    let new_string = "";
+    for(let i = 0; i < path.length - 1; i++){
+      new_string += path[i] + "/";
+    }
+    new_string += path[path.length - 1];
+
+    return new_string;
+  } else {
+    return string;
+  }
+}
+
 async function POST_method_response(req, res){
   let new_post = await post_value(req, res);
   let message = JSON.parse(new_post);
   if(check_valid_fields(message) == true){
-    if(message.title.search(".") == -1){
-      console.log("I'm alive", message.title.search("."));
+    console.log("This is message.title:", message.title, "And this is what it finds:", message.title.search("txt"));
+    if(message.title.search("txt") != -1){
+      console.log("I'm alive", message.title.search("\."));
       let file_name = message.path_for_file + message.title;
+      file_name = let_post_last(file_name, 1);
       fs.writeFile(file_name, message.content, function(err){
         if(err) console.log(err);
       });
       console.log("Succesfult created / edited file:", file_name);
     } else {
       console.log("What!!!");
-      fs.mkdir(message.path_for_file + "/posts/" + message.title, function(err){
+      message.title = let_post_last(message.title, 0);
+      fs.mkdir(message.path_for_file + message.title, function(err){
         if(err) console.log(err);
       });
-      fs.mkdir(message.path_for_file + "posts/" + message.title + "/posts/", function(err){
+      fs.mkdir(message.path_for_file + message.title + "/posts/", function(err){
         if(err) console.log(err);
       });
-      fs.writeFile(message.path_for_file +"posts/" + message.title + "/discription.txt", message.content, function(err){
+      fs.writeFile(message.path_for_file + message.title + "/discription.txt", message.content, function(err){
         if(err) console.log(err);
       });
       console.log("I just succedded in making a file");
@@ -147,41 +168,48 @@ function GET_method_response(request, response){
 
         let dir_path = source_url + new_new_url;
         //console.log(dir_path);
-        let files = fs.readdirSync(dir_path);
-        files.forEach(function(file) {
+        try{
+          let files = fs.readdirSync(dir_path);
+          files.forEach(function(file) {
 
-          json_object_containing_posts.titles.push(file);
-          let stats = fs.statSync(dir_path + "/" + file);
-          let mtime = convert_time_m(stats.mtime);
-          
-          let emtime = "";
-          for(let s = 0; s < mtime.length - 12 - 9; s++){
-            emtime += mtime[s];
-          }
-          emtime += " (GMT+0200)";
-          json_object_containing_posts.edit.push(emtime);
-
-          if(isFile(file)){
-            let [file_name, file_type] = file.split(".");
-            if(file_type == "txt"){
-              //console.log("this is so stupid:", dir_path + w + file)
-              let data = fs.readFileSync(dir_path + "/" + file, {encoding: "utf8", flag:"r"});
-              json_object_containing_posts.content.push(data);
+            json_object_containing_posts.titles.push(file);
+            let stats = fs.statSync(dir_path + "/" + file);
+            let mtime = convert_time_m(stats.mtime);
+            
+            let emtime = "";
+            for(let s = 0; s < mtime.length - 12 - 9; s++){
+              emtime += mtime[s];
             }
-          } else {
-            //console.log("THis is new_new_url:", new_new_url);
-            let start_index = new_new_url.search("Fony-Stark.github.io");
-            start_index = (start_index != -1) ? start_index : 0;
-            let link = "";
-            for(let k = start_index + 6; k < new_new_url.length; k++){
-              link += new_new_url[k];
-            }
-            json_object_containing_posts.content.push("!LINK\n" + link);
+            emtime += " (GMT+0200)";
+            json_object_containing_posts.edit.push(emtime);
 
-            let data = fs.readFileSync(dir_path + "/" + file + "/discription.txt", {encoding: "utf8", flag:"r"});
-            json_object_containing_posts.discription.push(data);
-          }
-        });
+            if(isFile(file)){
+              let [file_name, file_type] = file.split(".");
+              if(file_type == "txt"){
+                //console.log("this is so stupid:", dir_path + w + file)
+                let data = fs.readFileSync(dir_path + "/" + file, {encoding: "utf8", flag:"r"});
+                json_object_containing_posts.content.push(data);
+              }
+            } else {
+              //console.log("THis is new_new_url:", new_new_url);
+              let start_index = new_new_url.search("Fony-Stark.github.io");
+              start_index = (start_index != -1) ? start_index : 0;
+              let link = "";
+              for(let k = start_index + 6; k < new_new_url.length; k++){
+                link += new_new_url[k];
+              }
+              json_object_containing_posts.content.push("!LINK\n" + link);
+
+              let data = fs.readFileSync(dir_path + "/" + file + "/discription.txt", {encoding: "utf8", flag:"r"});
+              json_object_containing_posts.discription.push(data);
+            }
+          });
+        } catch(err) {
+          console.log("couldn't parse content, because: ", err);
+          response.writeHead(400);
+          response.end();
+          return;
+        }
         //console.log("This is the json_object", json_object_containing_posts.content);
         response.writeHead(200, {"Content-Type": "application/json"});
         response.write(JSON.stringify(json_object_containing_posts));

@@ -196,6 +196,7 @@ function convert_blog_post(event){
   let password = document.getElementById("password").value;
   let new_title = document.getElementById("new_title").value;
   let post = document.getElementById("pick_blog").checked == 0;
+  console.log("Post", post);
 
   console.log(new_title, content, password, post);
 
