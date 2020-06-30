@@ -284,10 +284,12 @@ function GET_method_response(request, response){
               case "jpg":
                   response.writeHead(200, {"Content-Type": "image/jpg"});
                   response.write(fs.readFileSync(source_url + new_url), "binary");
+                  response.end();
                   return;
   	          case "jpeg":
   		            response.writeHead(200, {"Content-Type": "image/jpeg"});
-  		            response.write(fs.readFileSync(source_url + new_url), "binary");
+                  response.write(fs.readFileSync(source_url + new_url), "binary");
+                  response.end();
   		            return;
               default:
                   response.writeHead(404);

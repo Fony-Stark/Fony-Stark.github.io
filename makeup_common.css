@@ -42,15 +42,18 @@ p {
 }
 
 #head_side_bar {
+    overflow: scroll;
     height: 20vh;
 }
 
 #body_side_bar {
+    overflow: scroll;
     margin-top: 2vh;
     height: 55vh;
 }
 
 #foot_side_bar {
+    overflow: scroll;
     padding-left: 0.5vw;
     margin-top: 2vh;
     height: 15vh;

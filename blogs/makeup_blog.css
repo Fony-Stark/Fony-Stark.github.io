@@ -131,6 +131,9 @@
 }
 
 #toggle_post {
+  /* This should be commented out, for admin.
+  */ visibility: hidden;/*
+  */
   position: absolute;
   top: 75vh;
   right: 5vw;
