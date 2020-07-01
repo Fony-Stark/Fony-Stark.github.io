@@ -1,0 +1,1 @@
+Discribes the overall style of the website, here in the HTML Dom, CSS used and common JavaScript code.

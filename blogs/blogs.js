@@ -1,6 +1,6 @@
 function create_paragrah_item(title, content, time_of_post, link=""){
   //console.log("This is title: ", title);
-  content = content.replace(/\n/g, "<br/>");
+  content = (content != undefined) ? content.replace(/\n/g, "<br/>") : "";
   title = title.replace(/_/g, " ");
   //console.log(content);
   let new_blog_post = document.createElement("div");
@@ -152,14 +152,26 @@ async function give_me_content(link=""){
     sort_posts(blog_posts);
     //console.log("This is sorted:", blog_posts);
 
+    let skipped = [];
     for(let i = 0; i < blog_posts.titles.length; i++){
-      let content = blog_posts.content[i];
-      let last_edit = blog_posts.edit[i];
-      if(content.search("!LINK") == -1){
+      if(blog_posts.titles[i] == "Hello_World.txt"){
+        let content = blog_posts.content[i];
+        let last_edit = blog_posts.edit[i];
         let [file_name, file_type] = blog_posts.titles[i].split(".");
         let title = file_name;
         create_paragrah_item(title, content, last_edit);
-      } else {
+        skipped.push(i);
+      }
+    }
+
+    for(let i = 0; i < blog_posts.titles.length; i++){
+      let content = blog_posts.content[i];
+      let last_edit = blog_posts.edit[i];
+      if(content.search("!LINK") == -1 && !skipped.includes(i)){
+        let [file_name, file_type] = blog_posts.titles[i].split(".");
+        let title = file_name;
+        create_paragrah_item(title, content, last_edit);
+      } else if(!skipped.includes(i)) {
         let title = blog_posts.titles[i];
         let link = "";
         for(let j = "!LINK\n".length; j < content.length; j++){
@@ -216,6 +228,10 @@ function convert_blog_post(event){
   console.log("password: ", password);
 
   send_new_blog_post_to_server(title, content, path, password)
+}
+
+function show_admin(){
+  document.getElementById("toggle_post").style.visibility = "visible";
 }
 
 function convert_to_JSON(title, content, path_for_file, user_password){

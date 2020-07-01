@@ -268,6 +268,9 @@ function GET_method_response(request, response){
                   response.end();
                   return;
                   break;
+              case "txt":
+                response.writeHead(200, {"Contet-Type": "text/txt; charset=utf-8"});
+                break;
               case "css":
                   response.writeHead(200, {"Content-Type": "text/css"});
                   break;

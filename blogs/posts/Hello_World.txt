@@ -1,0 +1,7 @@
+Welcome to the blog-subpage of this website. Here you will be able to see some of my undergoing projects and my considerations about them.
+I'll also try to add links as reference on subjects I find interesting. 
+
+There are two types of chets in here, blogs and posts, blogs are a link with a title in blue, which you can click in on to see more under the same topic.
+A post is just a single text message. It title head will be written in black.
+
+The sorting of the blogs and posts are that blogs are always ontop of posts, the only exception to this rule, is this post, being a greeting as it is :). And disnewer, a blog or post is, discloser to the top it is.
