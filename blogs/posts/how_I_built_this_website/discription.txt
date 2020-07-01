@@ -1,2 +1,0 @@
-This blog contains which feature is on the website, and how they are implemented.
-A long with all sub-pages, for example this blog.
