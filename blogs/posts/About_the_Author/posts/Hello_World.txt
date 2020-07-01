@@ -1,0 +1,8 @@
+My name is Karl Immanuel Holt, and I'm a computer science student in Denmark at the university of Aalborg.
+I started my university education the summer of 2019 and expect to have my master the summer of 2024.
+
+I started studying computer science because, I've always had an interest for computers, however more as a gaming tool when I was young. I wrote my first Python script Junior year of High School, as tradition it was a simple "Hello World" program. When I'd to pick a major for university, it was torn between Maths and Computer Science, however the idea of being able to create things on a screen in Denmark, which people in the rest of the world would be able to read and use. Also one of my teachers introduced me to Graph Theory and Induction proof. Both of which I fell in love with. And both of which is taught in the computer science classes.
+
+
+I can't think of more to write.
+But if you have any questions, about the website or anything else  or if you find any mistakes Please feel free to contact me on: kholt19@student.aau.dk
