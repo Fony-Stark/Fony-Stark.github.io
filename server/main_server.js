@@ -12,7 +12,7 @@ nunjucks.configure('', {
 
 for(let i = 0; i < 25; i++){
     http.createServer((req, res) => {
-        server_functions(req, res, 8081 + i);
+        server_functions(req, res, 8080);
     }).listen(8081 + i);
 }
 
@@ -56,7 +56,7 @@ function check_valid_fields(message){
 
 function name_check(title){
   console.log("this is the title:", title);
-  if(title.search(",") != -1 || title.search("'") != -1 || title.search("'") != -1 || title.search('"') != -1 || title == "" || 
+  if(title.search(",") != -1 || title.search("'") != -1 || title.search("'") != -1 || title.search('"') != -1 || title == "" ||
       title == " " || title == "/" || title == "\\"){
     return false;
   } else {
@@ -212,7 +212,7 @@ function GET_method_response(request, response){
             json_object_containing_posts.titles.push(file);
             let stats = fs.statSync(dir_path + "/" + file);
             let mtime = convert_time_m(stats.mtime);
-            
+
             let emtime = "";
             for(let s = 0; s < mtime.length - 12 - 9; s++){
               emtime += mtime[s];
@@ -258,6 +258,7 @@ function GET_method_response(request, response){
     //console.log("\nThis is the request I got", request);
     //console.log("\nAnd this is the url:", request.url);
 
+    console.log("Does the file exist?", source_url + new_url, "/", fs.existsSync(source_url + new_url));
     if(new_url != "" && new_url != "/" && fs.existsSync(source_url + new_url)){
         let [file_name, file_type] = new_url.split(".");
         try {
