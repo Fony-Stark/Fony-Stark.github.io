@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/makeup_common.css">
+    {% block header %}{% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+
+    <div id = "left_side_bar">
+        <div class="side_bar_left" id="head_side_bar">
+              <a href="/"><p id="front_page_link">Homepage</p></a>
+        </div>
+        <div  class="side_bar_left" id="body_side_bar">
+
+        </div>
+        <div class="side_bar_left" id="foot_side_bar">
+            <p id="credit">This website is developed by Karl Immanuel Holt</p>
+            <p id="contact">Contact on: kholt19@student.aau.dk <br> or +45 29 79 94 91</p>
+        </div>
+    </div>
+    <script type="text/javascript" src="/common.js">
+    </script>
+  </body>
+</html>
