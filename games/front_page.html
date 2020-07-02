@@ -1,17 +1,32 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Fony Games</title>
-    <link href="/makeup_common.css" rel='stylesheet' type="text/css">
-    <link href="/games/makeup_games_frontpage.css" rel='stylesheet' type="text/css">
-  </head>
-  <body>
+{% extends "common.html" %}
+
+{% block title %}Fony Games{% endblock %}
+{% block header %}
+  <link href="/games/makeup_games_frontpage.css" rel='stylesheet' type="text/css">
+{% endblock %}
+
+{% block body %}
+  <div>
+
+  </div>
+
+  <div id="main_div">
     <div class="games_presented" id="g2048">
       <p class="games_title">2048</p>
-
+      <p class="discription">The game 2048, is a game which is based on the exponentiels of twos. You have a 5x5 board, each time you spend a turn
+      there will spawn a new, either 2 or 4 element on the board. Each turn has 4 options, LEFT, RIGHT, TOP or DOWN. These refere to which way you want
+      the blocks to move. If two elements with the same value collides they will intervine and become their product after addition. </p>
     </div>
-    <script type="text/javascript" src="games_brain.js">
-    </script>
-  </body>
-</html>
+    <div class="games_presented" id="Beer_pong">
+      <p class="games_title">Beer pong</p>
+      <p class="discription">This is not a game I in anyway plan to do. I just needed to list 3 things. </p>
+    </div>
+    <div class="games_presented" id="Annika_snake">
+      <p class="games_title">Annika Snake</p>
+      <p class="discription">Help Annika find all her boyfriends. </p>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="games_brain.js">
+  </script>
+{% endblock %}

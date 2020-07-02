@@ -1,3 +1,28 @@
-#g2048 {
-  
+#main_div {
+  position: absolute;
+  left: 5vw;
+  top: 2vh;
+  width: 94vw;
+  height: 96vh;
+  background-color: #BA765C;
+}
+
+.games_presented {
+  margin-left: 1vw;
+  margin-top: 2vh;
+  float: left;
+  width: 29.8%;
+  height: 20%;
+  background-color: #a9e190;
+  border-radius: 3vh;
+  padding-left: 2vw;
+}
+
+.games_title {
+  margin-top: 0;
+  font-size: 5vh;
+}
+
+.discription {
+  font-size: 1.5vh;
 }
