@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/makeup_common.css" rel='stylesheet' type="text/css">
+    <link href="/blogs/makeup_blog.css" rel="stylesheet" type="text/css">
+    <title>Fony Blogs</title>
+  </head>
+  <body>
+    <div id="header">
+        <div id="title">
+            <h1 id="webpage_title">Fony Blogs</h1>
+        </div>
+    </div>
+
+    <div id="go_back_up">
+      <a href="/blogs/one_true_blog.html"><p id="go_back">go to main blog ^</p></a>
+    </div>
+    <div id="current_html">
+    </div>
+
+
+    <div id="create_new_post">
+      <div id="close">X</div>
+      <form action="" id="post_creater">
+        <div id="blog_or_post">
+          <p class="description">blog / sub-blog:</p>
+          <input id="pick_blog" class="radio_button" type="radio" name="post_type" value="blog">
+
+          <p class="description">post:</p>
+          <input id="pick_post" class="radio_button" type="radio" name="post_type" value="post">
+        </div>
+        <input type="text" id="new_title" placeholder="Example Title">
+        <textarea type="text" id="content" placeholder="Content" rows="5" cols="30"></textarea>
+        <input type="submit" value="Submit" id="submit_post">
+        <input type="text" id="password" placeholder="password">
+      </form>
+    </div>
+
+    <div id="toggle_post">
+      <p id="toggle_the_post">post</p>
+    </div>
+
+    <div id = "left_side_bar">
+        <div class="side_bar_left" id="head_side_bar">
+              <a href="/"><p id="front_page_link">Homepage</p></a>
+        </div>
+        <div  class="side_bar_left" id="body_side_bar">
+
+        </div>
+        <div class="side_bar_left" id="foot_side_bar">
+            <p id="credit">This website is developed by Karl Immanuel Holt</p>
+            <p id="contact">Contact on: kholt19@student.aau.dk <br> or +45 29 79 94 91</p>
+        </div>
+    </div>
+
+    <script src="/blogs/blogs.js"></script>
+    <script src="/common.js"></script>
+  </body>
+</html>

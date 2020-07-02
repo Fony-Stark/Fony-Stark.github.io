@@ -1,0 +1,2 @@
+I've some ideas how I can create my flat into a nice working smarthome.
+This includes work with Raspberry Pies, Python, sensors, bluetooth speakers and calender work.

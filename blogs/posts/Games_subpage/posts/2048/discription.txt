@@ -1,0 +1,1 @@
+I've decided to build my own game in the genre of 2048. The goal is to both create an algorithm which plays the game close to perfect. And than create a Machine Learning algorithm which can play it even better.

@@ -1,0 +1,11 @@
+As of the time writing this, all sub-pages except for /blogs are hardcoded both in HTML and CSS. So my idea is to expand on the template I've used for the /blogs. And try to make it fit for all games. Something like the /Annika sub-page. However it still needs a bit work.
+
+
+As for making graphics, I think I'll use the same trick as I used for /rabbits. Where each element or block in this case, will be an HTML element, div container. And than just move them around by adjusting the absolute, or... I'll probably use relative. TOP and LEFT CSS attributes.
+
+
+To make the game work, I'll create a matrix, or maybe a dictionary to keep track of where the individual blocks are. Since the game is fairly easy and straight forward. I wouldn't have to develop that many functions, UP, DOWN, RIGHT and LEFT. Should be all the required functions for the game to work.
+This makes a good base for an artificial neural network as well, the game having 5x5 fields resulting in 25 different input nodes and 4 output nodes as mentioned above: LEFT, RIGHT, UP, DOWN.
+
+
+Having done these preparing thoughts I'll try and work at it, I'll post updates.

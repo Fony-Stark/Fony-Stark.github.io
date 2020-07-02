@@ -31,7 +31,7 @@ function create_new_gift(x_cord, y_cord, ID_code){
     style_string += "padding:" + "0; ";
     elem.setAttribute("id", String(ID_code));
     elem.setAttribute("style", style_string);
-    elem.setAttribute("src", "images/Bunde.JPG");
+    elem.setAttribute("src", "/rabbits/images/bunde.jpg");
     document.getElementById("board").appendChild(elem);
 }
 
@@ -39,7 +39,7 @@ function print_board_to_doc(height, width){
     for(let i = 0; i < height; i++){
         for(let j = 0; j < width; j++){
             let elem = document.createElement("img");
-            elem.setAttribute("src", ("images/dirt.jpg"));
+            elem.setAttribute("src", ("/rabbits/images/dirt.jpg"));
             elem.setAttribute("height", String(100/height + "%"));
             elem.setAttribute("width", String(100/width  + "%"));
             elem.setAttribute("margin", "0");

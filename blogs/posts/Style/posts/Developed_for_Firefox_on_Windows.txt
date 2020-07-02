@@ -1,0 +1,3 @@
+I programmed the most of the CSS, for this website on a windows machine using Firefox. However, at the moment of writing this, I've the website open on POP OS(Linux), Firefox. And... The input fields, for creating a new post or blog, are not showing up the same way as they did on Windows. 
+
+I'll have to take care of this later. Some time ago, I did make the post box invisible for public users. However if you want to see it you can bring it up by writing show_admin() in the console.
