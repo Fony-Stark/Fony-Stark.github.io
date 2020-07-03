@@ -1,3 +1,5 @@
-document.getElementById("g2048").addEventListener("click", () => {
-  console.log("I really like you. You know that right? <3");
+document.getElementById("g2048").addEventListener("click", (event) => {
+  event.preventDefault();
+
+  window.location.href = "/games/g2048/g2048.html";
 });

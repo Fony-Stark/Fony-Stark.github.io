@@ -1,0 +1,28 @@
+{% extends "common.html" %}
+
+{% block title %}Fony Games{% endblock %}
+{% block header %}
+  <link href="makeup_2048.css" rel='stylesheet' type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div id="main_div">
+  <div id="header_controls">
+    <div id="toggle_controls">
+      <div id="controls" class="alg_or_con">Controls</div>
+      <div id="algorithms" class="alg_or_con">Neural Network</div>
+    </div>
+
+  </div>
+
+  <div id="game_div">
+    <div id="board">
+
+    </div>
+  </div>
+</div>
+
+  <script type="text/javascript" src="g2048.js">
+  </script>
+{% endblock %}
