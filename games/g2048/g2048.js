@@ -8,6 +8,7 @@ function build_the_board(){
       element.id = "box_" + String(i);
       element.style.width = "20%"
       element.style.float = "left";
+      element.style.overflowWrap = "break-word";
 
       the_board.appendChild(element);
     }
@@ -18,7 +19,12 @@ function game_controller(){
   let board = Array(25);
   create_new_element(board);
 
-  document.onkeydown = (e) => {checkKey(e, board); };
+  document.onkeydown = (e) => {checkKey(e, board); }
+
+  document.getElementById("up_arrow").addEventListener("click", () => {game_move("UP", board)});
+  document.getElementById("down_arrow").addEventListener("click", () => {game_move("DOWN", board)});
+  document.getElementById("right_arrow").addEventListener("click", () => {game_move("RIGHT", board)});
+  document.getElementById("left_arrow").addEventListener("click", () => {game_move("LEFT", board)});
 }
 
 function create_new_element(current_board){
@@ -31,14 +37,28 @@ function create_new_element(current_board){
   if(free_fields.length == 0){
     return "LOOSE";
   }
-  let generate_on_field = free_fields[Math.round(Math.random() * free_fields.length)];
+  let generate_on_field = free_fields[Math.floor(Math.random() * (free_fields.length))];
   let value = (Math.random() * 10 > 9) ? 4 : 2;
   current_board[generate_on_field] = value;
+  show_new_element_on_board(generate_on_field, value);
   return current_board;
 }
 
+function show_new_element_on_board(position, value){
+  //console.log("This is position:", position, "and this is value:", value);
+  let element = document.getElementById("box_" + String(position));
+
+  let new_element = document.createElement("p");
+  new_element.style.fontSize = "4vw";
+  new_element.style.margin = "0";
+
+  new_element.innerHTML = value;
+
+  element.appendChild(new_element);
+}
+
 function checkKey(e, board){
-  console.log(board);
+  //console.log(board);
   if(e.keyCode == 38){
       game_move("UP", board);
     } else if(e.keyCode == 40){
@@ -52,7 +72,7 @@ function checkKey(e, board){
 }
 
 function game_move(way_to_move, board){
-  console.log(way_to_move);
+  //console.log(way_to_move);
   switch(way_to_move){
     case "UP":
       for(let i = 0; i < 5; i++){
@@ -83,8 +103,8 @@ function game_move(way_to_move, board){
             column.push(j);
           }
         }
-        for(let k = 5; k > 0; k--){
-          for(let d = 0; d < k; d++){
+        for(let k = 4; k >= 0; k--){
+          for(let d = k; d < 4; d++){
             if(board[column[d + 1]] == undefined){
               board[column[d + 1]] = board[column[d]];
               board[column[d]] = undefined
@@ -100,12 +120,10 @@ function game_move(way_to_move, board){
       for(let i = 0; i < 5; i++){
         let row = [];
         for(let j = 0; j < 5; j++){
-          if(j < i){
-            row.push(i*5 + j);
-          }
+          row.push(i*5 + j);
         }
-        for(let k = 5; k > 0; k--){
-          for(let d = 0; d < 5; d++){
+        for(let k = 4; k >= 0; k--){
+          for(let d = k; d < 4; d++){
             if(board[row[d + 1]] == undefined){
               board[row[d + 1]] = board[row[d]];
               board[row[d]] = undefined
@@ -121,9 +139,7 @@ function game_move(way_to_move, board){
       for(let i = 0; i < 5; i++){
         let row = [];
         for(let j = 0; j < 5; j++){
-          if(j < i){
-            row.push(i*5 + j);
-          }
+          row.push(i*5 + j);
         }
         for(let k = 0; k < 5; k++){
           for(let d = k; d > 0; d--){
@@ -142,6 +158,25 @@ function game_move(way_to_move, board){
       console.log("Game mode, got a wrong input:", way_to_move);
       return undefined;
   }
+  clear_board(board);
+  for(let i = 0; i < board.length; i++){
+    if(board[i] != undefined){
+      show_new_element_on_board(i, board[i]);
+    }
+  }
+  if(create_new_element(board) == "LOOSE"){
+    alert("You lost, sorry:");
+    clear_board(board);
+    for(let i = 0; i < board.length; i++){
+      board[i] = undefined;
+    }
+  };
+}
+
+function clear_board(board){
+    for(let i = 0; i < board.length; i++){
+      document.getElementById("box_"+String(i)).innerHTML = "";
+    }
 }
 
 game_controller();

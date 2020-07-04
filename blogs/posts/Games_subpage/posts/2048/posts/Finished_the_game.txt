@@ -1,0 +1,11 @@
+So as the title says, I've finished the game now.
+When I say finished, I mean that, you can play it by clicking arrow-left, arrow-right, arrow-up or arrow-down. And the game would react as you would think. Also it will reset the board for you when you loose. For now I've defined loosing as, making a move which doesn't make room for a new spawned block, you loose. That is to say, if you click arrow-up, and all 25 fields are filled, and there are no collisions, such that a field would be freed up. You loose. So you might have been able to play further had you clicked on left-arrow instead. I feel like this is a good way to end the game.
+
+There is one more difference between my version, and the original, and that is you are allowed, and the time, to move in a direction in which you don't force any fields to move, except for creating a new one. I've done this because I think it will make it easier to implement an efficient algorithm and it's one thing less to program. I might add / remove it later.
+
+
+At this time there is no way to win the game. As I think the only way to win the game is by having filled the board, with all unique values. The highest being 2^25 = 33554432.
+
+
+The next thing I'll get to work on, is making the controls, as buttons as well, such that you don't need a keyboard, and should be able to play it on any device. This should be fairly easy since it's just a couple of function calls set to event listeners. 
+The next thing would be to implement an Algorithm, based on how I think the best way to play might be. And see how well it works. And after that implement a neural network. And than see to, both have a trained version and an untrained version on the website. Such that people could try and watch the neural network after it has been trained. But also give the ability for themself to train it, and see its progress.
