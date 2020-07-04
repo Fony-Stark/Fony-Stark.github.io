@@ -49,14 +49,20 @@ function compare_time(time1, time2){
   //console.log("This is time1", list_for_time1, "this is time2", list_for_time2);
   if(Number(list_for_time1[3]) > Number(list_for_time2[3])){
     return 0;
+  } else if(Number(list_for_time1[3]) > Number(list_for_time2[3])){
+    return 1;
   } else if(month_to_number(list_for_time1[1]) > month_to_number(list_for_time1[1])){
     return 0;
+  } else if(month_to_number(list_for_time1[1]) < month_to_number(list_for_time1[1])){
+    return 1;
   } else if(Number(list_for_time1[2]) > Number(list_for_time2[2])){
     return 0;
-  } 
-  
-  let new_time1 = list_for_time1[1].split(":");
-  let new_time2 = list_for_time2[1].split(":");
+  } else if(Number(list_for_time1[2]) < Number(list_for_time2[2])){
+    return 1;
+  }
+
+  let new_time1 = list_for_time1[4].split(":");
+  let new_time2 = list_for_time2[4].split(":");
   if(Number(new_time1[0]) > Number(new_time2[0])){
     return 0;
   } else if(Number(new_time1[1]) > Number(new_time2[1])){
@@ -105,12 +111,12 @@ function sort_posts(array, newest_or_oldest=true){
           content_swap = array.content[j];
 
           if(optimist_link == 1){
-            
+
           }
 
           index = j;
         }
-      } 
+      }
     }
     if(index != i){
       //console.log("I swapped ", i, "with", index);
