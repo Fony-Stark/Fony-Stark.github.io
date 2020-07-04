@@ -1,0 +1,7 @@
+I started out wanting to make a board which were always quadratic. But after working on it, I've realised that it really doesn't matter that much. And with the wrong screen size, the quadratic would, look too small, so instead I try to have a rectangle. Which with the correct screen size would be a quadratic. 
+
+
+The way I've created the board, is by making a JavaScript function, for when the page is loaded starts creating 25 appropriate boxes, with the right attributes using ".style" and then ".appendChild" to the board itself. Now that I think about it, I might not have to create the element 25 times, but only do the ".appendChild" 25 times. After I've written this post I'll look into that.
+
+
+I've not started to create the actual game mechanics yet. But I hope to do that later today.

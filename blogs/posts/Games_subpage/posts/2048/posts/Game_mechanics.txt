@@ -1,0 +1,8 @@
+So I looked into doing the ".appendChild" instead of the creating 25 equal elements, however the way I've set the board up at the moment, that is not a possibility, since I have set it up like a chess board, so no boards on the divs, just different background colours, using for(let i = 0; i < 25; i++){
+    (i % 2) ? red : green;
+
+The above is known as a tertiary expression.
+
+
+I've set up the first game movement, "UP", and create a new element. I though I could use pretty much the same code for three next movements: "LEFT", "RIGHT" and "DOWN". However it wasn't as easy as I first suspected, and I've gotten pretty hungry, so I'll take a pause and get some food. I'll look into it afterwards, and try to reuse as much code as possible. I'll of course try to abstract over it. Since I've been taught Top Down Programming at AAU, which I fell like is a nice way to structure your code. If you are interested in seeing the full code, just go to /games/g2048/g2048.html
+And look at the JS code there through the developer tool.(F12).
