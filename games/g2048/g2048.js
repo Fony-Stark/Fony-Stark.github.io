@@ -17,14 +17,107 @@ build_the_board();
 
 function game_controller(){
   let board = Array(25);
+  let suppress = 0;
+
   create_new_element(board);
 
-  document.onkeydown = (e) => {checkKey(e, board); }
+  document.getElementById("run_algorithm").addEventListener("click", () => {suppress = (suppress == 1) ? 0 : 1;
+    if(suppress == 1){
+      document.getElementById("run_algorithm").innerHTML = "Stop algorithm";
+    } else {
+      document.getElementById("run_algorithm").innerHTML = "Run algorithm";
+    }
+  });
 
-  document.getElementById("up_arrow").addEventListener("click", () => {game_move("UP", board)});
-  document.getElementById("down_arrow").addEventListener("click", () => {game_move("DOWN", board)});
-  document.getElementById("right_arrow").addEventListener("click", () => {game_move("RIGHT", board)});
-  document.getElementById("left_arrow").addEventListener("click", () => {game_move("LEFT", board)});
+  setInterval(function(){if(suppress == 1)one_step_algorithm(board)}, 50);
+
+  document.onkeydown = (e) => {if(suppress == 0)checkKey(e, board); }
+
+  document.getElementById("up_arrow").addEventListener("click", () => {if(suppress == 0)game_move("UP", board)});
+  document.getElementById("down_arrow").addEventListener("click", () => {if(suppress == 0)game_move("DOWN", board)});
+  document.getElementById("right_arrow").addEventListener("click", () => {if(suppress == 0)game_move("RIGHT", board)});
+  document.getElementById("left_arrow").addEventListener("click", () => {if(suppress == 0)game_move("LEFT", board)});
+}
+
+function one_step_algorithm(board){
+  let items_unique = 1;
+  let best_bottom = 1;
+  let rounds = 0;
+  let k = 20;
+  for(k = 20; k >= 0; k = k - 5){
+    for(let i = k + 5; i < k+10; i++){
+      if(rounds > 0 && (k / 5) % 2 == 0){
+        if(i < k + 4){
+          if(board[i] > board[i + 1]){
+            best_bottom = 0;
+          }
+        }
+      } else if(rounds > 0) {
+        if(i != k){
+          if(board[i] < board[i + 1]){
+            best_bottom = 0;
+          }
+        }
+      }
+    }
+    for(let i = k; i < k+5; i++){
+      if(board[i] == undefined){
+        items_unique = 0;
+      }
+      if(i > k && items_unique == 1){
+        items_unique = (board[i] != board[i - 1]) ? 1 : 0;
+      }
+      if(i < k + 4 && items_unique == 1 ){
+        items_unique = (board[i] != board[i + 1]) ? 1 : 0;
+      }
+      if(i >= 5){
+        let f = i;
+        for(let j = i - 5; j >= 0; j= j - 5){
+          if(board[j] == board[f] && board[j] != undefined){
+            //console.log("I'm going motherfucking down!");
+            game_move("DOWN", board);
+            return;
+          }
+          else if (board[j] != undefined){
+            break;
+          }
+        }
+      }
+      if(i > k){
+        for(let j = i - 1; j >= k; j--){
+          if(board[j] == board[i] && board[j] != undefined){
+            let random_factor = Math.random() * 10;
+            if((best_bottom == 1 && (rounds == 0 || random_factor > 8)) || random_factor < 2.5){
+              game_move(((k / 5) % 2 == 0) ? "LEFT" : "RIGHT", board);
+            } else {
+              let d = 20 - (rounds - 1) * 5;
+              game_move(((d / 5) % 2 == 0) ? "LEFT" : "RIGHT", board);
+            }
+            return;
+          }
+          else if(board[j] != undefined){
+            break;
+          }
+        }
+      }
+    }
+    if(items_unique == 0){
+      break;
+    }
+    if(best_bottom == 1){
+      rounds += 1;
+    }
+    //console.log(rounds);
+  }
+  //console.log("I'm down here");
+  let random_num = Math.random() * 10;
+  if(items_unique == 1 && (random_num < ((k / 5) % 2 == 0) ? 1 : 3)){
+    game_move("RIGHT", board);
+  } else if(items_unique == 1 && random_num < 4){
+    game_move("LEFT", board);
+  } else {
+    game_move("DOWN", board);
+  }
 }
 
 function create_new_element(current_board){

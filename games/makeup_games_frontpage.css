@@ -16,6 +16,7 @@
   background-color: #a9e190;
   border-radius: 3vh;
   padding-left: 2vw;
+  overflow: scroll;
 }
 
 .games_title {

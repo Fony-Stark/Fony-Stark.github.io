@@ -1,0 +1,30 @@
+I've now created "a not all that terrible" algorithm, which can play the game. I've test it for 10 games, the results are as follows:
+Game 1   - 2048
+Game 2   - 1024
+Game 3   - 1024
+Game 4   - 4096
+Game 5   -  256
+Game 6   -  512
+Game 7   -  256
+Game 8   -  512
+Game 8.5 -  128
+Game 9   -  512
+Game 10  - 4096
+
+I think this spread is to be expected because of the random factors in the game, which type spawns and on which field. I also think that one of the reasons the algorithm doesn't do better is because it is to willing to pull down, instead of going left. (My tactic going into this is to always keep the biggest tile in the lower left corner.) Which my algorithm do, most of the time. Sometimes it tries to solve a mistake from which it has a lower tile on 2 from the right in the bottom than the one 3 from the right at the bottom. making the 3. bigger than the 1.
+
+
+The algorithm works as follows:
+Go throw the entire lower row, in a for-loop. It first checks the field in the bottom left corner, if there is anything above which has the same value as it. If there is it will pull down. Than it checks the whole row if it can make a better tile by combining any on the row. If it can than it will go left. It than checks the second tile if anything can be pulled down to make it bigger. if so it does. And so it continues until it reaches the fifth field in the row. If there is a tile on every field of the row. It than continues to the second row from the bottom. doing the same thing. If the bottom row isn't full. It will make a money move. Meaning that it will make a move to make some new tiles. This will either be pulling down or pulling to the left.
+
+
+I think I'll look into making a better algorithm in the future. But for now, I've a "working" algorithm, for you guys and myself to play with. So now I'll look into developing an Artificial Neural Network, which hopefully beats my algorithm, fairly soon after being developed.
+
+
+Some fast thoughts about the ANN:
+It will have three layers, 25 neurons in the input layer maybe around 15 in the hidden layer and 4 in the output layer. Following the idea of:
+Number of neurons in output layer > number of neurons in the hidden layer > number of neurons in the output layer.
+
+I think I'll use either Neuroevolution or Gradient descendent. I'll blog about my reasons for making the choice I'll make, when I've read up on Neuroevolution and refreshed my knowledge on gradient descendent, the last time working with this being February.
+
+Talk to you soon.
