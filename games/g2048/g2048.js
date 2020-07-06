@@ -45,6 +45,7 @@ function one_step_algorithm(board){
   let rounds = 0;
   let k = 20;
   for(k = 20; k >= 0; k = k - 5){
+    let smallest = board[k + 4];
     for(let i = k + 5; i < k+10; i++){
       if(rounds > 0 && (k / 5) % 2 == 0){
         if(i < k + 4){
@@ -52,11 +53,21 @@ function one_step_algorithm(board){
             best_bottom = 0;
           }
         }
+        if(board[i] < smallest){
+          smallest = board[i];
+        }
       } else if(rounds > 0) {
         if(i != k){
           if(board[i] < board[i + 1]){
             best_bottom = 0;
           }
+        }
+      }
+    }
+    if(rounds > 0 && k > 0){
+      for(let i = k; i < k+5; i++){
+        if(board[i - 5] > smallest){
+          best_bottom = 0;
         }
       }
     }
@@ -79,7 +90,11 @@ function one_step_algorithm(board){
             return;
           }
           else if (board[j] != undefined){
-            break;
+            if(j > (k < 10) ? 0 : (k - 10)){
+              f = j;
+            } else {
+              break;
+            }
           }
         }
       }
@@ -87,6 +102,7 @@ function one_step_algorithm(board){
         for(let j = i - 1; j >= k; j--){
           if(board[j] == board[i] && board[j] != undefined){
             let random_factor = Math.random() * 10;
+            let smallest = board[k];
             if((best_bottom == 1 && (rounds == 0 || random_factor > 8)) || random_factor < 2.5){
               game_move(((k / 5) % 2 == 0) ? "LEFT" : "RIGHT", board);
             } else {
@@ -111,9 +127,9 @@ function one_step_algorithm(board){
   }
   //console.log("I'm down here");
   let random_num = Math.random() * 10;
-  if(items_unique == 1 && (random_num < ((k / 5) % 2 == 0) ? 1 : 3)){
+  if(items_unique == 1 && (random_num < ((k / 5) % 2 == 0) ? 3 : 7)){
     game_move("RIGHT", board);
-  } else if(items_unique == 1 && random_num < 4){
+  } else if(items_unique == 1 && random_num < 10){
     game_move("LEFT", board);
   } else {
     game_move("DOWN", board);
