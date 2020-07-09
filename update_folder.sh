@@ -1,0 +1,1 @@
+(cd ./server && git pull)
