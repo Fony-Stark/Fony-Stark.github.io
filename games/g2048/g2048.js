@@ -107,7 +107,7 @@ function one_step_algorithm(board){
               game_move(((k / 5) % 2 == 0) ? "LEFT" : "RIGHT", board);
             } else {
               let d = 20 - (rounds - 1) * 5;
-              game_move(((d / 5) % 2 == 0) ? "LEFT" : "RIGHT", board);
+              game_move((((d / 5) % 2 == 0) && random_factor > 5) ? "LEFT" : "RIGHT", board);
             }
             return;
           }
