@@ -1,0 +1,6 @@
+I was recently looking at one of my fellow students' website, pmikkelsen.com. On his site he has a sidebar for shortcuts to the subpages of his website. I found this to be awesome, and thought it would be cool to have on this blog-subpage. So if you look to the left. You will see it.
+
+The implementation of this was a bit more difficult, than first thought.
+Since I want this website to be dynamic, more specific this blog-subpage, since I've still not had time to work of the rest of the website. It was important for me not to hard code any of the names, links or information on the sidebar, and it should be able to automatic update when adding new blogs / posts. Or... To be honest, it wasn't really that difficult, but rather annoying, since I fetch all the folders, with a GET request to the server. However I've already implemented this to get the data for the folders / posts, however the old me was so stupid to not make it re-useable. So I couldn't use any of the functions already implemented. So I ended up having to write some almost identical code... Which I did...
+
+Reminder to self, go back and abstract over this code. For the next GET, feature I'll implement on the website.
