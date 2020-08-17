@@ -194,6 +194,39 @@ function GET_method_response(request, response){
     //console.log("This is the url:", source_url + new_url);
 
     if(!isFile(source_url + new_url)){
+      if(new_url == "blogs/build_tree"){
+        function flatten(lists) {
+          return lists.reduce((a, b) => a.concat(b), []);
+        }
+
+        function getDirectories(srcpath) {
+          return fs.readdirSync(srcpath)
+            .map(file => path.join(srcpath, file))
+            .filter(path => fs.statSync(path).isDirectory());
+        }
+
+        function getDirectoriesRecursive(srcpath) {
+          return [srcpath, ...flatten(getDirectories(srcpath).map(getDirectoriesRecursive))];
+        }
+        let json_object = {"link": [], "name": [], "depth": []};
+        let folders_tree = getDirectoriesRecursive(source_url + "/blogs/posts")
+        console.log("This is what I need:", folders_tree);
+
+        for(let i = 0; i < folders_tree.length; i++){
+          let name = folders_tree[i].split("/");
+          if(name[name.length - 1] != "posts"){
+            json_object.name.push(name[name.length - 1]);
+            let depths = (folders_tree[i].match(/posts/g) || []).length
+            json_object.depth.push(depths);
+            json_object.link.push(folders_tree[i]);
+          }
+        }
+
+        response.writeHead(200, {"Content-Type": "application/json"});
+        response.write(JSON.stringify(json_object));
+        response.end();
+        return;
+      }
       let json_object_containing_posts = {"titles": [], "content": [], "edit": [], "discription": []};
       //console.log("I just found a folder");
       if(new_url.search("content") != -1){

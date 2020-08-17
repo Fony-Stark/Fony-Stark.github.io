@@ -271,4 +271,48 @@ function post(){
 document.getElementById("toggle_post").addEventListener("click", post)
 document.getElementById("submit_post").addEventListener("click", (event) => convert_blog_post(event));
 
-give_me_content();
+function init_build_tree(){
+  document.getElementById("top_tree").addEventListener("click", async () => {
+    document.getElementById("webpage_title").innerHTML = "Fony Blogs";
+    document.getElementById("current_html").innerHTML = "";
+    await give_me_content("");
+  });
+
+  fetch("build_tree").then(async function(response) {
+    let tree_elements = await response.json();
+    console.log(tree_elements);
+    //console.log("This:", blog_posts);
+
+    let doc = document.getElementById("blog_tree");
+    for(let i = 0; i < tree_elements.link.length; i++){
+      let new_elem = document.createElement("p");
+      let true_name = (tree_elements.name[i].replace(/_/g, " "));
+      new_elem.innerHTML = true_name;
+      new_elem.addEventListener("click", async () => {
+        document.getElementById("webpage_title").innerHTML = true_name;
+        document.getElementById("current_html").innerHTML = "";
+        let hello = tree_elements.link[i].split("/");
+        let g = 0;
+        while(hello[g] != "blogs"){
+            g++
+        }
+        let new_link = "";
+        for(let k = g + 1; k < hello.length; k++){
+          new_link += (hello[k] + "/");
+        }
+        await give_me_content(new_link);
+      });
+      new_elem.className = "tree";
+      console.log("Hey:", (tree_elements.depth[i]+ "vw"));
+      new_elem.style.marginLeft = (tree_elements.depth[i]+ "vw");
+      doc.appendChild(new_elem);
+    }
+  });
+}
+
+function loaded(){
+  give_me_content();
+  init_build_tree();
+}
+
+loaded()
