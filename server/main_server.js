@@ -34,7 +34,7 @@ function server_functions(req, res, port_listener){
 
     //here it says, that i can take a new connection.
     //fs.writeFile(port_listener.toString() + ".txt", "0", function(err) {
-    //    if(err) throw err;
+    //    if(err) throw err; 
     //});
 }
 
@@ -226,6 +226,9 @@ function GET_method_response(request, response){
         response.write(JSON.stringify(json_object));
         response.end();
         return;
+      } else if(new_url == "basic_weights"){
+        response.writeHead(404);
+        response.end();
       }
       let json_object_containing_posts = {"titles": [], "content": [], "edit": [], "discription": []};
       //console.log("I just found a folder");
