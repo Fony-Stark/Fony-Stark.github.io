@@ -1,4 +1,4 @@
-function build_the_board(){
+/*function build_the_board(){
     let the_board = document.getElementById("board");
 
     for(let i = 0; i < 25; i++){
@@ -144,7 +144,7 @@ function one_step_algorithm(board){
     return game_move("DOWN", board);
   }
 }
-
+*/
 function create_new_element(current_board){
   let free_fields = [];
   for(let i = 0; i < 25; i++){
@@ -158,9 +158,9 @@ function create_new_element(current_board){
   let generate_on_field = free_fields[Math.floor(Math.random() * (free_fields.length))];
   let value = (Math.random() * 10 > 9) ? 4 : 2;
   current_board[generate_on_field] = value;
-  show_new_element_on_board(generate_on_field, value);
+  //show_new_element_on_board(generate_on_field, value);
   return current_board;
-}
+} /*
 
 function show_new_element_on_board(position, value){
   //console.log("This is position:", position, "and this is value:", value);
@@ -188,7 +188,7 @@ function checkKey(e, board){
   }
   return "LIVE";
 }
-
+*/
 function game_move(way_to_move, board, bot=0){
   //console.log(way_to_move);
   switch(way_to_move){
@@ -277,10 +277,10 @@ function game_move(way_to_move, board, bot=0){
       return undefined;
   }
   if(bot == 0){
-    clear_board(board);
+    //clear_board(board);
     for(let i = 0; i < board.length; i++){
       if(board[i] != undefined){
-        show_new_element_on_board(i, board[i]);
+        //show_new_element_on_board(i, board[i]);
       }
     }
   }
@@ -291,7 +291,7 @@ function game_move(way_to_move, board, bot=0){
         highest = board[i];
       }
     }
-    clear_board(board);
+    //clear_board(board);
     for(let i = 0; i < board.length; i++){
       board[i] = undefined;
     }
@@ -300,13 +300,13 @@ function game_move(way_to_move, board, bot=0){
   return "LIVE";
 }
 
-function clear_board(board){
-    for(let i = 0; i < board.length; i++){
-      document.getElementById("box_"+String(i)).innerHTML = "";
-    }
-}
+//function clear_board(board){
+//    for(let i = 0; i < board.length; i++){
+//      document.getElementById("box_"+String(i)).innerHTML = "";
+//    }
+//}
 
-game_controller();
+//game_controller();
 
 /********               This is the Machine Inteligens              *********/
 /***     Initiating weights arrays     ***/
@@ -323,10 +323,32 @@ let output_layer_weight = Array(4);
 /******             END             ******/
 /*** Loading or generating new weights ***/
 // Checking if a saved File exists
-//fetch("basic_weights").then(console.log("hello");)
-function get_weights(){
-  return [input_layer_weight, middle_layer_weight] = generating_all_new_weights([input_layer_weight.length,
-    middle_layer_weight.length, output_layer_weight.length]);
+async function get_weights(num = 1){
+  let weight = fetch("/basic_weights").then(async function(response){
+    let weights = await response.json();
+    if(weights.exist == true){
+      return weights.weight.weights;
+    } else {
+      let new_weights = Array();
+      for(let i = 0; i < num; i++){
+        new_weights.push(generating_all_new_weights([input_layer_weight.length,
+        middle_layer_weight.length, output_layer_weight.length]));
+      }
+      return new_weights
+    }
+  });
+  return weight;
+}
+
+function save_weights(weights){
+  let content = JSON.stringify({"weights":weights})
+
+  let xhr = new XMLHttpRequest();
+  let url = "/";
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(content);
+  return 200;
 }
 
 // Generating new weights
@@ -344,7 +366,7 @@ function generating_all_new_weights(length_of_arrays){
 function generating_new_weights(numbers_to_generate){
     let weights = [];
     for(let i = 0; i < numbers_to_generate; i++){
-        weights.push(Math.random() * 10**6 % 20);
+        weights.push(Math.random() * 10**12 % 10**4);
     }
     return weights;
 } 
@@ -367,7 +389,6 @@ function input_to_output_calc(input, array_of_weights){
 
 //let test_1 = (input_to_output_calc([5, 2, 3, 2, 4, 1, 0, 0, 0, 1, 8, 1, 1, 2024, 1, 1, 1, 4, 1, 1, 1, 1, 1, 3, 4], [input_layer_weight, middle_layer_weight]));
 //console.log("HEY:", highest(test_1))
-
 // Calc a layer transit
 // Takes input as an array of the weights to transit from layer 1 to layer 2
 // input is an array of currten value of the first layer
@@ -430,7 +451,7 @@ function start_a_player(weights){
 
     if(out_come[0] == "LOOSE"){
       //console.log("This is the best score:", out_come[1]);
-      return calc_score(old_board, out_come[1]);
+      return [calc_score(old_board, out_come[1]), out_come[1]];
     }
   }
 }
@@ -450,13 +471,13 @@ function population_from_starting_point(prototype_weights, pop){
   let big_family = Array();
   big_family.push(prototype_weights);
   for(let i = 0; i < pop; i++){
-    big_family.push(reproducing(prototype_weights, 0.5));
+    big_family.push(reproducing(prototype_weights, 5));
   }
   return big_family;
 }
 
 // Make new weights for a new neurale network from an old one.
-function reproducing(parent_weights, margin=0.05){
+function reproducing(parent_weights, margin=0.2){
   let new_weights = Array();
   for(let j = 0; j < parent_weights.length; j++){
     new_weights.push(Array());
@@ -476,7 +497,7 @@ function reproducing(parent_weights, margin=0.05){
 /*** Removing half the populations of Networks ***/
 function perfectly_balanced(big_happy_family){
   for(let i = big_happy_family.length - 2; i > 0; i-=2){
-    let unfortunate_soul = int_in_range(i, big_happy_family.length);
+    let unfortunate_soul = int_in_range(0.25*i + 1.6, big_happy_family.length);
     big_happy_family.splice(unfortunate_soul, 1);
   }
   return big_happy_family;
@@ -502,35 +523,53 @@ function repropulate(survivors){
 
 /******                  END                  ******/
 /***              Put it all together            ***/
-function start_training_NN(){
-  let standard_weight = get_weights();
+function start_training_NN(standard_weight){
+  console.log("This is standard:", standard_weight);
+  //let family = get_weights(200);
   let family = population_from_starting_point(standard_weight, 200);
-  console.log(family);
+  //console.log(family);
   let k = 0;
 
   while(true){
     k++;
-    let scores = Array();
+    let s_scores = Array();
     for(let i = 0; i < family.length; i++){
-      scores.push(start_a_player(family[i]));
+      s_scores.push(start_a_player(family[i]));
     }
+    let scores = [[], []];
+    for(let i = 0; i < s_scores.length; i++){
+      scores[0].push(s_scores[i][0]);
+      scores[1].push(s_scores[i][1]);
+    }
+
     bubbleSortAlgo(scores, family);
     let survivors = perfectly_balanced(family);
     family = repropulate(survivors);
     if(k % 20 == 0){
-      console.log("This is k", k, "and the best NN in this family got:", scores[0]);
+      console.log("This is k", k, "and the best NN in this family got:", scores[0][0], "The best block it got was: ", scores[1][0]);
+    }
+    if(k % 500 == 0){
+      save_weights(family[0]);
     }
   }
 }
+
+
+// Start the training:
+get_weights().then((res) => start_training_NN(res[0]));
 
 /******                  END                  ******/
 // Sort on, behalf of best score.
 // I was tired at this point, so this function is coppied from https://www.educba.com/sorting-algorithms-in-javascript/
 // I've placed a reminder for myself to go back and change this to a better sorting algorithm.
 function swap(arr, arr2, firstIndex, secondIndex){
-  let temp = arr[firstIndex];
-  arr[firstIndex] = arr[secondIndex];
-  arr[secondIndex] = temp;
+  let temp = arr[0][firstIndex];
+  arr[0][firstIndex] = arr[0][secondIndex];
+  arr[0][secondIndex] = temp;
+
+  temp = arr[1][firstIndex];
+  arr[1][firstIndex] = arr[1][secondIndex];
+  arr[1][secondIndex] = temp;
 
   temp = arr2[firstIndex];
   arr2[firstIndex] = arr2[secondIndex];
@@ -538,16 +577,14 @@ function swap(arr, arr2, firstIndex, secondIndex){
 }
 
 function bubbleSortAlgo(arraaytest, reminder){
-  let len = arraaytest.length,
+  let len = arraaytest[0].length,
   i, j, stop;
   for (i=0; i < len; i++){
     for (j=0, stop=len-i; j < stop; j++){
-      if (arraaytest[j] < arraaytest[j+1]){
+      if (arraaytest[0][j] < arraaytest[0][j+1]){
         swap(arraaytest, reminder, j, j+1);
       }
     }
   }
-  return arraaytest;
+  return arraaytest[0];
 }
-
-start_training_NN();
