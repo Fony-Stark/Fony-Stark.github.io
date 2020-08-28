@@ -131,7 +131,9 @@ async function POST_method_response(req, res){
   let new_post = await post_value(req, res);
   let message = JSON.parse(new_post);
   try{
+    message.weights;
     let data_to_save = JSON.stringify(message);
+    console.log("saving weights");
     fs.writeFile("./games/g2048/weights.json", data_to_save, function(err){
       if(err) console.log("couldn't save weights.",err);
     });
