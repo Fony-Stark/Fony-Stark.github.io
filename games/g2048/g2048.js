@@ -490,8 +490,6 @@ function highest(outputs){
 /***        Playing a whole game       ***/
 // This section is mainly for training the neural network. I'll look into making it visible on the platform after.
 function start_a_player(weights, bot){
-
-  console.log("This is the weights, I was given.", weights);
   let old_board = Array(25);
   let board = Array(25);
 
