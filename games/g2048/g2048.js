@@ -180,7 +180,7 @@ function checkKey(e, board){
   return undefined;
 }
 
-function game_move(way_to_move, board){
+function game_move(way_to_move, board, score){
   //console.log(way_to_move);
   switch(way_to_move){
     case "UP":
