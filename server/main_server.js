@@ -34,7 +34,7 @@ function server_functions(req, res, port_listener){
 
     //here it says, that i can take a new connection.
     //fs.writeFile(port_listener.toString() + ".txt", "0", function(err) {
-    //    if(err) throw err;
+    //    if(err) throw err; 
     //});
 }
 
@@ -130,6 +130,16 @@ function let_post_last(string, k){
 async function POST_method_response(req, res){
   let new_post = await post_value(req, res);
   let message = JSON.parse(new_post);
+  try{
+    message.weights;
+    let data_to_save = JSON.stringify(message);
+    console.log("saving weights");
+    fs.writeFile("./games/g2048/weights.json", data_to_save, function(err){
+      if(err) console.log("couldn't save weights.",err);
+    });
+    return;
+  } catch(err){
+  }
   if(check_valid_fields(message) == true){
     console.log("This is message.title:", message.title, "And this is what it finds:", message.title.search("txt"));
     if(message.title.search("txt") != -1){
@@ -157,7 +167,7 @@ async function POST_method_response(req, res){
       console.log("I just succedded in making a file");
     }
   } else {
-    console.log("Someone with the wrong password just tried to edit my files");
+    console.log("Someone with the wrong password just tried to edit MY files!");
   }
 }
 
@@ -173,10 +183,6 @@ async function post_value(req, res){
   });
 
   return body_of_post;
-}
-
-function please_work(text){
-  console.log(text);
 }
 
 function GET_method_response(request, response){
@@ -226,6 +232,19 @@ function GET_method_response(request, response){
         response.write(JSON.stringify(json_object));
         response.end();
         return;
+      } else if(new_url == "basic_weights"){
+        let json_object_weights = {"weight": [], "exist": false}
+        console.log("I just served the weights");
+        if(fs.existsSync("./games/g2048/weights.json")){
+          json_object_weights.exist = true;
+
+          let data = fs.readFileSync("./games/g2048/weights.json", {encoding: "utf8", flag:"r"});
+          json_object_weights.weight = JSON.parse(data);
+        }
+        response.writeHead(200, {"Content-Type": "application/json"});
+        response.write(JSON.stringify(json_object_weights));
+        response.end();
+        return;
       }
       let json_object_containing_posts = {"titles": [], "content": [], "edit": [], "discription": []};
       //console.log("I just found a folder");
@@ -250,7 +269,7 @@ function GET_method_response(request, response){
             for(let s = 0; s < mtime.length - 12 - 9; s++){
               emtime += mtime[s];
             }
-            emtime += " (GMT+0200)";
+            //emtime += " (GMT+0200)";
             json_object_containing_posts.edit.push(emtime);
 
             if(isFile(file)){
